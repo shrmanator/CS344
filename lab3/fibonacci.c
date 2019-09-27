@@ -15,7 +15,15 @@
  */
 
 /* Write your solution here */
-
+void fib(int **fib_sequence, int n) {
+    int i;
+    *fib_sequence = (int*) malloc(n*sizeof(int));
+    (*fib_sequence)[0] = 0;
+    (*fib_sequence)[1] = 1;
+    for(i=2;i<n;i++){
+        (*fib_sequence)[i] = (*fib_sequence)[i - 1] + (*fib_sequence)[i - 2];
+    }
+}
 
 int main(int argc, char **argv) {
     /* do not change this main function */
