@@ -40,11 +40,10 @@ int main(int argc, char **argv) {
     
     // Your code goes here
     strncpy(greeting, argv[1], sizeof(greeting));
-    printf("%d", sizeof(greeting));
     
-    strncat(greeting, "Helloooo", sizeof(greeting) - sizeof(argv[1]));
+    strncat(greeting, " ", sizeof(greeting) - strlen(argv[1]));
     
-    strncat(greeting, name, sizeof(greeting) - sizeof(argv[1]));
+    strncat(greeting, name, sizeof(greeting) - strlen(argv[1]) - 2);
 
     printf("%s\n", greeting);
     return 0;
