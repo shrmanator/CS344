@@ -20,7 +20,15 @@
 */
 
 // Write the function strip_q_marks here
-
+int strip_q_marks(char *s) {
+    int question_marks = 0;
+    
+    while (strchr(s, '?') != NULL && s[strlen(s) - 1] == '?') {
+        question_marks++;
+        s[strlen(s) - 1] = '\0';
+    }
+    return question_marks;
+}
 
 int main(int argc, char **argv) {
     // Do not change this main function.
