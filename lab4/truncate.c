@@ -12,11 +12,11 @@
     the string "fun" and returns 5.
 */
 
-int truncate(char *s, int n) {
+int truncate(char* s, int n) {
     int original_str;
     int truncated_str;
     
-    if (sizeof(*s) > n) {
+    if (strlen(s) > n) {
         original_str = strlen(s);
         s[n] = '\0';
         truncated_str = strlen(s); // but now it's truncated

@@ -15,12 +15,12 @@
   Your main function should return 0, regardless of what is printed.
 */
 int main(int argc, char **argv) {
-    if(argc > 2) {
+    if(argc == 3) {
         if(*argv[1] == *argv[2]) {
             printf("Same\n");
-        }
-        else if (*argv[1] != *argv[2]) {
+        } else {
             printf("Different\n");
+            
         }
     }
     else {
