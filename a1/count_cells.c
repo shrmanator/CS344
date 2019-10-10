@@ -52,8 +52,10 @@ int main(int argc, char **argv) {
     int text_file_array[rows_int][cols_int];
 
     read_image(rows_int, cols_int, text_file_array, text);
-    if (strcmp(argv[2], "-p") == 0) {
+    if (argv[2] != '\0') {
+        if (strcmp(argv[2], "-p") == 0) {
         print_image(rows_int, cols_int, text_file_array);
+        }
     }
     count_cells(rows_int, cols_int, text_file_array);
 
