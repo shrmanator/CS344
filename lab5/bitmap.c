@@ -43,11 +43,10 @@ struct pixel **read_pixel_array(FILE *image, int pixel_array_offset, int width, 
         pixel_array[i] = malloc(width * sizeof(struct pixel)); // correct size allocated?
     }
     
-    // problems start here: What part of the image file do we seek to?
-    fseek(image, pixel_array_offset, SEEK_SET);
-//    printf("%lu", fread(pixel_array[0], sizeof(struct pixel), 4, image));
-    for (int j=0; j<width; j++) {
-        fread(pixel_array[j], sizeof(struct pixel), 3, image);
+    fseek(image, pixel_array_offset, SEEK_SET); // What part of the image file do we seek to?
+    
+    for (int j=0; j<height; j++) {
+        fread(pixel_array[j], sizeof(struct pixel), width, image);
     }
     return pixel_array;
 }

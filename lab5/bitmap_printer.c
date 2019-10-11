@@ -36,8 +36,13 @@ int main(int argc, char **argv) {
             print_pixel(pixels[height - 1 - i][width - 1 - j]);
         }
     }
-
+    
+    fclose(image);
+    
     // Clean up: you need to do this!
-
+    for(int k=0;k<height;k++){
+        free(pixels[k]);
+    } free(pixels);
+    
     return 0;
 }
