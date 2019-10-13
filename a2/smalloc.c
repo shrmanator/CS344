@@ -60,8 +60,7 @@ void mem_init(int size) {
          perror("mmap");
          exit(1);
     }
-    
-    return mem;
+    // 1. Create a struct block node. The starting address is the one returned by mmap.
 }
 
 void mem_clean(){
