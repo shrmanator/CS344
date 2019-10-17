@@ -12,8 +12,16 @@
  */
 
 char *copy(char *dest, const char *src, int capacity) {
-
-
+    int i = 0;
+    while (i < capacity) {
+        if (dest[i] == '\0') {
+            return dest;
+        } else {
+            dest[i] = src[i];
+        }
+        i++;
+    }
+    dest[i] = '\0';
     return dest;
 }
 
