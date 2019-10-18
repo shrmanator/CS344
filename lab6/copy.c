@@ -12,16 +12,23 @@
  */
 
 char *copy(char *dest, const char *src, int capacity) {
+    // empty string case:
+    if (dest[0] == '\0') {
+        return dest;
+    }
     int i = 0;
     while (i < capacity) {
-        if (dest[i] == '\0') {
+        if (src[i] == '\0') {
+            int remaining_len = capacity - i;
+            for (int j = remaining_len; j < capacity; j++) {
+                dest[j] = 'p';
+            }
             return dest;
         } else {
             dest[i] = src[i];
         }
         i++;
     }
-    dest[i] = '\0';
     return dest;
 }
 
@@ -38,7 +45,7 @@ int main(int argc, char **argv) {
     memset(dest, 'x', size);
 
     copy(dest, src, size);
-
+    
     printf("%s\n", dest);
     return 0;
 }
