@@ -12,23 +12,14 @@
  */
 
 char *copy(char *dest, const char *src, int capacity) {
-    // empty string case:
-    if (dest[0] == '\0') {
-        return dest;
-    }
-    int i = 0;
-    while (i < capacity) {
+    for (int i = 0; i < capacity - 1; i++) {
         if (src[i] == '\0') {
-            int remaining_len = capacity - i;
-            for (int j = remaining_len; j < capacity; j++) {
-                dest[j] = 'p';
-            }
+            dest[i] = '\0';
             return dest;
-        } else {
-            dest[i] = src[i];
         }
-        i++;
+        dest[i] = src[i];
     }
+    dest[capacity - 1] = '\0';
     return dest;
 }
 
@@ -46,6 +37,22 @@ int main(int argc, char **argv) {
 
     copy(dest, src, size);
     
-    printf("%s\n", dest);
+//    printf("%s\n", dest);
+    
+    
+    
+    
+    int good = 0;
+    for (int i = 0; i<sizeof(dest); i++) {
+            printf("%c\n", dest[i]);
+        if (dest[i] == '\0') {
+            good = 1;
+            break;
+        }
+    }
+    if (good == 1) {
+        printf("null terminated");
+    } else { printf("NOT null terminated"); }
+    
     return 0;
 }
