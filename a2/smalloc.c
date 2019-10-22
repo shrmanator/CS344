@@ -15,29 +15,44 @@ struct block *freelist;
 // A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-void insert_new_block(struct block** list, int position) {
-    // link the inserted block and resize.
+void insert_block(struct block** list, int position) {
+    struct block *new_block;
+    //empty list case:
+    if (allocated_list == NULL) {
+        new_block->addr = 0;
+    } else {
+        struct block *curr = allocated_list;
+        while (curr != NULL) {
+//            if ()
+        
+            curr = curr->next;
+        }
+        
+        
+    }
+    new_block->size = position;
+    
+    
+    //2. resize.
     
 }
 
-void remove_the_block(struct block** list, int position) {
-    // unlink the targeted block and resize.
+void remove_block(struct block** list, int position) {
 }
 
-/* Searches the freelist for a block that is
- at least nbytes bytes in size. */
 void *smalloc(unsigned int nbytes) {
     //TODO
     if (nbytes % 8 != 0) {
-        // Make sure 8|nbytes:
+        // resize nbytes so it divides 8:
         nbytes = nbytes - (nbytes % 8) + 8;
     }
-    struct block *curr_block = freelist;
-    while (curr_block != NULL) {
-        if (curr_block->size == nbytes) {
-            insert_new_block();
+    struct block *curr = freelist;
+    while (curr != NULL) {
+        if (curr->size >= nbytes) {
+            insert_block(curr, )
+            return curr;
         }
-        curr_block = curr_block->next;
+        curr = curr->next;
     }
     return NULL;
 }
