@@ -15,26 +15,21 @@ struct block *freelist;
 // A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-void insert_block(struct block** list, int position) {
-    struct block *new_block;
-    //empty list case:
+//Allocates a block of memory starting at list and ending at position:
+void insert_block(struct block *list, int position) {
     if (allocated_list == NULL) {
-        new_block->addr = 0;
-    } else {
-        struct block *curr = allocated_list;
-        while (curr != NULL) {
-//            if ()
-        
-            curr = curr->next;
-        }
-        
-        
+        allocated_list = malloc(sizeof(struct block));
+        allocated_list->addr = list->addr;
+        allocated_list->size = position;
+        allocated_list->next = NULL;
     }
-    new_block->size = position;
-    
-    
-    //2. resize.
-    
+    else {
+        struct block *new_block = malloc(sizeof(struct block));
+    }
+//    mid:
+//
+//    back:
+    list->size -= position;
 }
 
 void remove_block(struct block** list, int position) {
@@ -49,8 +44,8 @@ void *smalloc(unsigned int nbytes) {
     struct block *curr = freelist;
     while (curr != NULL) {
         if (curr->size >= nbytes) {
-            insert_block(curr, )
-            return curr;
+            insert_block(curr, nbytes);
+            break;
         }
         curr = curr->next;
     }
@@ -89,7 +84,6 @@ void mem_init(int size) {
          perror("mmap");
          exit(1);
     }
-    // Code starts here:
     freelist = malloc(sizeof(struct block));
     // Don't forget 2 free memory from malloc call.
     freelist->addr = mem;
@@ -100,4 +94,16 @@ void mem_init(int size) {
 
 void mem_clean(){
     //TODO
+}
+
+
+
+
+
+//main function for Testing Only. Remove B4 Assignement Submission.
+int main() {
+    mem_init(30);
+    smalloc(16);
+    printf("%d, %d", allocated_list->size, freelist->size);
+    return 0;
 }
