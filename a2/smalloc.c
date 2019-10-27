@@ -43,15 +43,6 @@ void insert_block(struct block *freeblock, int size) {
     allocated_list = new_block;
 }
 
-//add block to freelist:
-void grow_freelist(struct block *freeblock, int size) {
-}
-
-//remove block from allocate list:
-void remove_block(struct block *list, int size) {
-    
-}
-
 void *smalloc(unsigned int nbytes) {
     if (nbytes % 8 != 0) {
         // resize nbytes so it divides 8:
@@ -68,6 +59,14 @@ void *smalloc(unsigned int nbytes) {
         curr = curr->next;
     }
     return NULL;
+}
+
+//add block to freelist:
+void grow_freelist(struct block *freeblock, int size) {
+}
+
+//remove block from allocate list:
+void remove_block(struct block *list, int size) {
 }
 
 int sfree(struct block *list, int size) {
