@@ -17,6 +17,8 @@ struct block *allocated_list;
 
 //Allocates a block of memory starting at list and ending at position:
 void insert_block(struct block *list, int position) {
+    
+    //allocated_list
     if (allocated_list == NULL) {
         allocated_list = malloc(sizeof(struct block));
         allocated_list->addr = list->addr;
@@ -24,15 +26,20 @@ void insert_block(struct block *list, int position) {
         allocated_list->next = NULL;
     }
     else {
-        struct block *new_block = malloc(sizeof(struct block));
+        struct block *new_block = malloc(sizeof(struct block)); //check!
+        //allocated_list is always the most recent item in list (bec we are prepending!)
+        new_block->addr = allocated_list->addr + position;
+        new_block->size = position;
+        new_block->next = allocated_list;
+        allocated_list = new_block;
     }
-//    mid:
-//
-//    back:
+    
+    //freelist
+    list->addr += position;
     list->size -= position;
 }
 
-void remove_block(struct block** list, int position) {
+void remove_block(struct block **list, int position) {
 }
 
 void *smalloc(unsigned int nbytes) {
@@ -51,7 +58,6 @@ void *smalloc(unsigned int nbytes) {
     }
     return NULL;
 }
-
 
 int sfree(void *addr) {
     //TODO
@@ -97,13 +103,24 @@ void mem_clean(){
 }
 
 
+//main function for Testing Only. Remove B4 Submission or running make
+int main(void) {
+    
+    
+    mem_init(4096*64);
+    
+    char *ptrs[10];
+    int i;
 
-
-
-//main function for Testing Only. Remove B4 Assignement Submission.
-int main() {
-    mem_init(30);
-    smalloc(16);
-    printf("%d, %d", allocated_list->size, freelist->size);
+    /* Call smalloc 4 times */
+    
+    for(i = 0; i < 4; i++) {
+        int num_bytes = (i+1) * 10;
+    
+        ptrs[i] = smalloc(num_bytes);
+    }
+    printf("%s", *ptrs);
+    mem_clean();
     return 0;
 }
+
