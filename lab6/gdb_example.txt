@@ -1,0 +1,164 @@
+Script started on 2019-10-18 14:20:29-0400
+]0;sherma73@b3175-01:/h/u14/c7/00/sherma73/Desktop/sherma73/lab6b3175-01:~/Desktop/sherma73/lab6$ gdb overflow
+GNU gdb (Ubuntu 8.1-0ubuntu3.1) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from overflow...done.
+(gdb) b 36
+Breakpoint 1 at 0x959: file overflow.c, line 36.
+(gdb) b 33
+Breakpoint 2 at 0x94f: file overflow.c, line 33.
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/sherma73/lab6/overflow 
+Address of the variables:
+7fffffffe690 -> &after[0]
+7fffffffe694 -> &after[1]
+7fffffffe698 -> &after[2]
+7fffffffe69c -> &after[3]
+7fffffffe680 -> &a[0]
+7fffffffe684 -> &a[1]
+7fffffffe688 -> &a[2]
+7fffffffe68c -> &a[3]
+7fffffffe670 -> &before[0]
+7fffffffe674 -> &before[1]
+7fffffffe678 -> &before[2]
+7fffffffe67c -> &before[3]
+7fffffffe66c -> &i
+7fffffffe668 -> &index
+
+Initial values:
+i = 0
+before = {10, 10, 10, 10}
+a = {0, 0, 0, 0}
+after = {10, 10, 10, 10}
+
+Breakpoint 2, main () at overflow.c:33
+33	    printf("\n");
+(gdb) display after[0]
+1: after[0] = 10
+(gdb) continue
+Continuing.
+
+
+Breakpoint 1, main () at overflow.c:36
+36	    for (i = 0; i < OVERFLOW; i++) {
+1: after[0] = 10
+(gdb) n
+37	        a[i] = i * 10;
+1: after[0] = 10
+(gdb) 
+38	        printf("i = %d\n", i);
+1: after[0] = 10
+(gdb) 
+i = 0
+39	        printf("before = {%d, %d, %d, %d}\n", before[0], before[1], before[2], before[3]);
+1: after[0] = 10
+(gdb) 
+before = {10, 10, 10, 10}
+40	        printf("a = {%d, %d, %d, %d}\n", a[0], a[1], a[2], a[3]);
+1: after[0] = 10
+(gdb) 
+a = {0, 0, 0, 0}
+41	        printf("after = {%d, %d, %d, %d}\n", after[0], after[1], after[2], after[3]);
+1: after[0] = 10
+(gdb) 
+after = {10, 10, 10, 10}
+36	    for (i = 0; i < OVERFLOW; i++) {
+1: after[0] = 10
+(gdb) 
+37	        a[i] = i * 10;
+1: after[0] = 10
+(gdb) 
+38	        printf("i = %d\n", i);
+1: after[0] = 10
+(gdb) 
+i = 1
+39	        printf("before = {%d, %d, %d, %d}\n", before[0], before[1], before[2], before[3]);
+1: after[0] = 10
+(gdb) 
+before = {10, 10, 10, 10}
+40	        printf("a = {%d, %d, %d, %d}\n", a[0], a[1], a[2], a[3]);
+1: after[0] = 10
+(gdb) 
+a = {0, 10, 0, 0}
+41	        printf("after = {%d, %d, %d, %d}\n", after[0], after[1], after[2], after[3]);
+1: after[0] = 10
+(gdb) 
+after = {10, 10, 10, 10}
+36	    for (i = 0; i < OVERFLOW; i++) {
+1: after[0] = 10
+(gdb) 
+37	        a[i] = i * 10;
+1: after[0] = 10
+(gdb) 
+38	        printf("i = %d\n", i);
+1: after[0] = 10
+(gdb) 
+i = 2
+39	        printf("before = {%d, %d, %d, %d}\n", before[0], before[1], before[2], before[3]);
+1: after[0] = 10
+(gdb) 
+before = {10, 10, 10, 10}
+40	        printf("a = {%d, %d, %d, %d}\n", a[0], a[1], a[2], a[3]);
+1: after[0] = 10
+(gdb) 
+a = {0, 10, 20, 0}
+41	        printf("after = {%d, %d, %d, %d}\n", after[0], after[1], after[2], after[3]);
+1: after[0] = 10
+(gdb) 
+after = {10, 10, 10, 10}
+36	    for (i = 0; i < OVERFLOW; i++) {
+1: after[0] = 10
+(gdb) 
+37	        a[i] = i * 10;
+1: after[0] = 10
+(gdb) 
+38	        printf("i = %d\n", i);
+1: after[0] = 10
+(gdb) 
+i = 3
+39	        printf("before = {%d, %d, %d, %d}\n", before[0], before[1], before[2], before[3]);
+1: after[0] = 10
+(gdb) 
+before = {10, 10, 10, 10}
+40	        printf("a = {%d, %d, %d, %d}\n", a[0], a[1], a[2], a[3]);
+1: after[0] = 10
+(gdb) 
+a = {0, 10, 20, 30}
+41	        printf("after = {%d, %d, %d, %d}\n", after[0], after[1], after[2], after[3]);
+1: after[0] = 10
+(gdb) 
+after = {10, 10, 10, 10}
+36	    for (i = 0; i < OVERFLOW; i++) {
+1: after[0] = 10
+(gdb) 
+37	        a[i] = i * 10;
+1: after[0] = 10
+(gdb) 
+38	        printf("i = %d\n", i);
+1: after[0] = 40
+(gdb) p after[K[K[K[K[K&(afe[Kterp0[K[K[0])
+$1 = (int *) 0x7fffffffe690
+(gdb) p &(ap4[K[K[4])
+$2 = (int *) 0x7fffffffe690
+(gdb) q[Kq
+A debugging session is active.
+
+	Inferior 1 [process 54320] will be killed.
+
+Quit anyway? (y or n) y
+]0;sherma73@b3175-01:/h/u14/c7/00/sherma73/Desktop/sherma73/lab6b3175-01:~/Desktop/sherma73/lab6$ exit
+exit
+
+Script done on 2019-10-18 14:22:18-0400
