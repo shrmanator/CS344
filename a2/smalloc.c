@@ -15,10 +15,16 @@ struct block *freelist;
 //A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-void shrink_freelist(struct block *freeblock, int size) {
-    freeblock->size -= size;
-    freeblock->addr += size;
-    
+//1. Allocates a block of memory starting at freeblock and ending at size:
+void remove_block(struct block *list, int size) {
+    block = block->next;
+}
+
+//2. resize the free block, add it to freelist.
+void grow_freelist(struct block *freeblock, int size) {
+    freeblock->size += size;
+    freeblock->addr -= size;
+
     if (freeblock->size == 0) {
         if (freeblock == freelist) {
             freelist = freelist->next;
@@ -30,19 +36,34 @@ void shrink_freelist(struct block *freeblock, int size) {
             }
             curr = curr->next;
         }
-        free(freeblock);
     }
 }
 
-//Allocates a block of memory starting at freeblock and ending at size:
-void insert_block(struct block *freeblock, int size) {
-    struct block *new_block = malloc(sizeof(struct block)); //check!
-    new_block->addr = (void*)((uintptr_t)freeblock->addr + (uintptr_t)size);
-    new_block->size = size;
-    new_block->next = allocated_list;
-    allocated_list = new_block;
+//3. in freelist, sfree either deletes a block,
+    shrinks an existing block,
+    or splits a block into two, based on circumstances.
+int sfree(void *addr)
+    struct block *curr = allocated_list;
+    while (curr != NULL) {
+        if (curr->addr == addr) {
+            void *address = curr->addr;
+            remove_block(curr, nbytes); // remove curr from allocated_list
+            grow_freelist(curr, nbytes); // add
+            return 0; // success
+        }
+        curr = curr->next;
+    }
+    return -1; // error
 }
 
+
+
+
+
+
+
+
+// FINISHED: DO NOT TOUCH THESE FUNCTIONS!
 void *smalloc(unsigned int nbytes) {
     if (nbytes % 8 != 0) {
         // resize nbytes so it divides 8:
@@ -61,26 +82,33 @@ void *smalloc(unsigned int nbytes) {
     return NULL;
 }
 
-//add block to freelist:
-void grow_freelist(struct block *freeblock, int size) {
+//Inserts to allocated_list a block of memory starting at freeblock and ending at size:
+void insert_block(struct block *freeblock, int size) {
+    struct block *new_block = malloc(sizeof(struct block)); //check!
+    new_block->addr = (void*)((uintptr_t)freeblock->addr + (uintptr_t)size);
+    new_block->size = size;
+    new_block->next = allocated_list;
+    allocated_list = new_block;
 }
 
-//remove block from allocate list:
-void remove_block(struct block *list, int size) {
-}
-
-int sfree(struct block *list, int size) {
-    struct block *curr = freelist;
-    while (curr != NULL) {
-        if (curr->size == nbytes) {
-            void *address = curr->addr;
-            remove_block(curr, nbytes);
-            grow_freelist(curr, nbytes);
-            return address;
+//Resize the free block, remove it from freelist, then free its memory:
+void shrink_freelist(struct block *freeblock, int size) {
+    freeblock->size -= size;
+    freeblock->addr += size;
+    
+    if (freeblock->size == 0) {
+        if (freeblock == freelist) {
+            freelist = freelist->next;
         }
-        curr = curr->next;
+        struct block *curr = freelist;
+        while (curr != NULL) {
+            if (curr->next == freeblock) {
+                curr->next = curr->next->next;
+            }
+            curr = curr->next;
+        }
+        free(freeblock);
     }
-    return NULL;
 }
 
 
