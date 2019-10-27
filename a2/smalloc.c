@@ -12,38 +12,47 @@ void *mem;
 // A linked list of struct blocks that identify the portions of the memory region that are free (not in use). Blocks in this list are stored in increasing address order.
 struct block *freelist;
 
-// A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
+//A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-//Allocates a block of memory starting at list and ending at position:
-void insert_block(struct block *list, int position) {
+void shrink_freelist(struct block *freeblock, int size) {
+    freeblock->size -= size;
+    freeblock->addr += size;
     
-    //allocated_list
-    if (allocated_list == NULL) {
-        allocated_list = malloc(sizeof(struct block));
-        allocated_list->addr = list->addr;
-        allocated_list->size = position;
-        allocated_list->next = NULL;
+    if (freeblock->size == 0) {
+        if (freeblock == freelist) {
+            freelist = freelist->next;
+        }
+        struct block *curr = freelist;
+        while (curr != NULL) {
+            if (curr->next == freeblock) {
+                curr->next = curr->next->next;
+            }
+            curr = curr->next;
+        }
+        free(freeblock);
     }
-    else {
-        struct block *new_block = malloc(sizeof(struct block)); //check!
-        //allocated_list is always the most recent item in list (bec we are prepending!)
-        new_block->addr = allocated_list->addr + position;
-        new_block->size = position;
-        new_block->next = allocated_list;
-        allocated_list = new_block;
-    }
-    
-    //freelist
-    list->addr += position;
-    list->size -= position;
 }
 
-void remove_block(struct block **list, int position) {
+//Allocates a block of memory starting at freeblock and ending at size:
+void insert_block(struct block *freeblock, int size) {
+    struct block *new_block = malloc(sizeof(struct block)); //check!
+    new_block->addr = (void*)((uintptr_t)freeblock->addr + (uintptr_t)size);
+    new_block->size = size;
+    new_block->next = allocated_list;
+    allocated_list = new_block;
+}
+
+//add block to freelist:
+void grow_freelist(struct block *freeblock, int size) {
+}
+
+//remove block from allocate list:
+void remove_block(struct block *list, int size) {
+    
 }
 
 void *smalloc(unsigned int nbytes) {
-    //TODO
     if (nbytes % 8 != 0) {
         // resize nbytes so it divides 8:
         nbytes = nbytes - (nbytes % 8) + 8;
@@ -51,17 +60,28 @@ void *smalloc(unsigned int nbytes) {
     struct block *curr = freelist;
     while (curr != NULL) {
         if (curr->size >= nbytes) {
+            void *address = curr->addr;
             insert_block(curr, nbytes);
-            break;
+            shrink_freelist(curr, nbytes);
+            return address;
         }
         curr = curr->next;
     }
     return NULL;
 }
 
-int sfree(void *addr) {
-    //TODO
-    return -1;
+int sfree(struct block *list, int size) {
+    struct block *curr = freelist;
+    while (curr != NULL) {
+        if (curr->size == nbytes) {
+            void *address = curr->addr;
+            remove_block(curr, nbytes);
+            grow_freelist(curr, nbytes);
+            return address;
+        }
+        curr = curr->next;
+    }
+    return NULL;
 }
 
 
@@ -103,24 +123,22 @@ void mem_clean(){
 }
 
 
-//main function for Testing Only. Remove B4 Submission or running make
-int main(void) {
-    
-    
-    mem_init(4096*64);
-    
-    char *ptrs[10];
-    int i;
-
-    /* Call smalloc 4 times */
-    
-    for(i = 0; i < 4; i++) {
-        int num_bytes = (i+1) * 10;
-    
-        ptrs[i] = smalloc(num_bytes);
-    }
-    printf("%s", *ptrs);
-    mem_clean();
-    return 0;
-}
-
+////main function for Testing Only. Remove B4 Submission or running make
+//int main(void) {
+//    mem_init(4096*64);
+//
+//    char *ptrs[10];
+//    int i;
+//
+//    /* Call smalloc 4 times */
+//
+//    for(i = 0; i < 4; i++) {
+//        int num_bytes = (i+1) * 10;
+//
+//        ptrs[i] = smalloc(num_bytes);
+//    }
+//    printf("%s", *ptrs);
+//    mem_clean();
+//    return 0;
+//}
+//
