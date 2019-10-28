@@ -79,14 +79,16 @@ void shrink_freelist(struct block *freeblock, int size) {
     
     if (freeblock->size == 0) {
         if (freeblock == freelist) {
-            freelist = freelist->next;
+            freelist = freelist->next; // truncate freelist
         }
-        struct block *curr = freelist;
-        while (curr != NULL) {
-            if (curr->next == freeblock) {
-                curr->next = curr->next->next;
+        else {
+            struct block *curr = freelist;
+            while (curr != NULL) {
+                if (curr->next == freeblock) {
+                    curr->next = curr->next->next; // truncate freelist
+                }
+                curr = curr->next;
             }
-            curr = curr->next;
         }
         free(freeblock);
     }
