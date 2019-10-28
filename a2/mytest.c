@@ -20,23 +20,38 @@
 
 int main() {
     
-    mem_init(10);
-    
-    char *ptrs[4];
-    int i;
+    mem_init(1000);
 
-    ptrs[0] = smalloc(10);
+    char *ptrs[10];
+
+    ptrs[0] = smalloc(5);
     ptrs[1] = smalloc(5);
     ptrs[2] = smalloc(5);
-    ptrs[3] = smalloc(10);
-    
+    ptrs[3] = smalloc(5);
+    write_to_mem(10, ptrs[0], 0);
+    write_to_mem(10, ptrs[1], 1);
+    write_to_mem(10, ptrs[2], 2);
+    write_to_mem(10, ptrs[3], 3);
+
     sfree(ptrs[0]);
     sfree(ptrs[2]);
     
-    for(i = 0; i < 4; i++) {
-        int num_bytes = (i+1) * 10;
-        write_to_mem(num_bytes, ptrs[i], i);
-    }
+    printf("List of allocated blocks:\n");
+    print_allocated();
+    printf("List of free blocks:\n");
+    print_free();
+    printf("Contents of allocated memory:\n");
+    print_mem();
     
+    printf("freeing %p result = %d\n", ptrs[1], sfree(ptrs[1]));
     
+    printf("List of allocated blocks:\n");
+    print_allocated();
+    printf("List of free blocks:\n");
+    print_free();
+    printf("Contents of allocated memory:\n");
+    print_mem();
+
+    mem_clean();
+    return 0;
 }
