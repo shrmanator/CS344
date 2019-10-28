@@ -15,7 +15,7 @@ struct block *freelist;
 //A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-// remove block from allocated
+// remove allocatedblock from allocated_list
 void remove_block(struct block *allocatedblock, int size) {
     if (allocatedblock->size == 0) {
         if (allocatedblock == allocated_list) {
@@ -34,34 +34,37 @@ void remove_block(struct block *allocatedblock, int size) {
     }
 }
 
-//2. resize the free block, add it to freelist.
-void grow_freelist(struct block *freeblock, int size) {
-    freeblock->size += size;
-    freeblock->addr -= size;
-
-    if (freeblock->size == 0) {
-        if (freeblock == freelist) {
-            freelist = freelist->next;
-        }
-        struct block *curr = freelist;
-        while (curr != NULL) {
-            if (curr->next == freeblock) {
-                curr->next = curr->next->next;
+//2. Grow one up, grow one down, or merge. This is called after remove_block.
+void grow_freelist(void *target_address, int size) {
+    struct block *curr;
+    while (curr != NULL) {
+        // if curr->addr and target_address are contiguous, grow curr:
+        if (curr->addr + curr->size == target_address) {
+            curr->size += size;
+            shrink_freelist(curr, curr->size);
+            // if curr->next->addr and target_address are contiguous, grow curr more:
+            if (curr->next != NULL && target_address + curr->addr == curr->next->addr) {
+                curr->size += curr->next->size;
+                shrink_freelist(curr->next, curr-next->size);
             }
+        }
+        else {
             curr = curr->next;
         }
     }
 }
 
-//3. in freelist, sfree either deletes a block,shrinks an existing block,
+//3. in allocated_list, sfree either deletes a block,shrinks an existing block,
 //    or splits a block into two, based on circumstances.
 int sfree(void *addr) {
     struct block *curr = allocated_list;
     while (curr != NULL) {
         if (curr->addr == addr) {
             void *address = curr->addr;
-            remove_block(curr, curr->size); // remove curr from allocated_list
-            grow_freelist(curr, curr->size); // add
+            int size = curr->size;
+            remove_block(curr, size); // remove curr from allocated_list
+            // curr is now freed (but member values saved in local vars)
+            grow_freelist(address, size); // adds removed node to freelist
             return 0; // success
         }
         curr = curr->next;
