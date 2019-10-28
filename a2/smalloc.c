@@ -35,22 +35,47 @@ void remove_block(struct block *target_block, struct block *list_type, int size)
 
 //2. Grow one up, grow one down, or merge. This is called after remove_block.
 void grow_freelist(void *target_address, int size) {
-    struct block *curr;
+    struct block *curr = freelist;
     while (curr != NULL) {
         // if curr->addr and target_address are contiguous, grow curr:
         if (curr->addr + curr->size == target_address) {
             curr->size += size;
-            remove_block(curr, freelist, curr->size);
             // if curr->next->addr and target_address are contiguous, grow curr more:
-            if (curr->next != NULL && target_address + curr->addr == curr->next->addr) {
+            if (curr->next != NULL && target_address + size == curr->next->addr) {
                 curr->size += curr->next->size;
-                remove_block(curr->next, freelist, curr->next->size);
-                return; // operation complete.
+                curr->next = curr->next->next;
             }
+            return; // operation complete.
         }
-        else {
-            curr = curr->next;
+        if (target_address + size == curr->addr) {
+            // target exactly above a free chunk:
+            curr->addr = target_address;
+            curr->size += size;
+            return;
         }
+        curr = curr->next;
+    }
+    struct block *new_block = malloc(sizeof(struct block));
+    new_block->addr = target_address;
+    new_block->size = size;
+    new_block->next = NULL;
+    if (mem == target_address) {
+        new_block->next = freelist;
+        freelist = new_block;
+        return;
+    }
+    curr = freelist;
+    while (curr != NULL) {
+        if (curr->next == NULL) {
+            curr->next = new_block;
+            return;
+        }
+        if (target_address > curr->addr + curr->size && target_address + size < curr->next->addr) {
+            new_block->next = curr->next;
+            curr->next = new_block;
+            return;
+        }
+        curr = curr->next;
     }
 }
 
