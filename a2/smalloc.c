@@ -15,9 +15,23 @@ struct block *freelist;
 //A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-//1. Allocates a block of memory starting at freeblock and ending at size:
-void remove_block(struct block *list, int size) {
-    list = list->next;
+// remove block from allocated
+void remove_block(struct block *allocatedblock, int size) {
+    if (allocatedblock->size == 0) {
+        if (allocatedblock == allocated_list) {
+            allocated_list = allocated_list->next; // truncate allocated
+        }
+        else {
+            struct block *curr = allocated_list;
+            while (curr != NULL) {
+                if (curr->next == allocatedblock) {
+                    curr->next = curr->next->next; // truncate allocated
+                }
+                curr = curr->next;
+            }
+        }
+        free(allocatedblock);
+    }
 }
 
 //2. resize the free block, add it to freelist.
