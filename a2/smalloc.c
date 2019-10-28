@@ -15,22 +15,21 @@ struct block *freelist;
 //A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-// remove allocatedblock from allocated_list
-void remove_block(struct block *allocatedblock, int size) {
-    if (allocatedblock->size == 0) {
-        if (allocatedblock == allocated_list) {
-            allocated_list = allocated_list->next; // truncate allocated
+void remove_block(struct block *target_block, struct block *list_type, int size) {
+    if (target_block->size == 0) {
+        if (target_block == list_type) {
+            allocated_list = list_type->next; // truncate allocated
         }
         else {
-            struct block *curr = allocated_list;
+            struct block *curr = list_type;
             while (curr != NULL) {
-                if (curr->next == allocatedblock) {
+                if (curr->next == target_block) {
                     curr->next = curr->next->next; // truncate allocated
                 }
                 curr = curr->next;
             }
         }
-        free(allocatedblock);
+        free(target_block);
     }
 }
 
@@ -41,11 +40,12 @@ void grow_freelist(void *target_address, int size) {
         // if curr->addr and target_address are contiguous, grow curr:
         if (curr->addr + curr->size == target_address) {
             curr->size += size;
-            shrink_freelist(curr, curr->size);
+            remove_block(curr, freelist, curr->size);
             // if curr->next->addr and target_address are contiguous, grow curr more:
             if (curr->next != NULL && target_address + curr->addr == curr->next->addr) {
                 curr->size += curr->next->size;
-                shrink_freelist(curr->next, curr-next->size);
+                remove_block(curr->next, freelist, curr->next->size);
+                return; // operation complete.
             }
         }
         else {
@@ -62,7 +62,7 @@ int sfree(void *addr) {
         if (curr->addr == addr) {
             void *address = curr->addr;
             int size = curr->size;
-            remove_block(curr, size); // remove curr from allocated_list
+            remove_block(curr, allocated_list, size);
             // curr is now freed (but member values saved in local vars)
             grow_freelist(address, size); // adds removed node to freelist
             return 0; // success
@@ -165,24 +165,3 @@ void mem_init(int size) {
 void mem_clean(){
     //TODO
 }
-
-
-////main function for Testing Only. Remove B4 Submission or running make
-//int main(void) {
-//    mem_init(4096*64);
-//
-//    char *ptrs[10];
-//    int i;
-//
-//    /* Call smalloc 4 times */
-//
-//    for(i = 0; i < 4; i++) {
-//        int num_bytes = (i+1) * 10;
-//
-//        ptrs[i] = smalloc(num_bytes);
-//    }
-//    printf("%s", *ptrs);
-//    mem_clean();
-//    return 0;
-//}
-//
