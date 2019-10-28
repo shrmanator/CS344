@@ -10,8 +10,15 @@ all : simpletest
 simpletest : simpletest.o smalloc.o testhelpers.o
 	gcc -Wall -g -o simpletest simpletest.o smalloc.o testhelpers.o
 
+mytest : mytest.o smalloc.o testhelpers.o 
+	gcc -Wall -g -o mytest mytest.o smalloc.o testhelpers.o
+
+
 # The following three rules compile a single .c file into an object file.  
 # We could collape these into one pattern rule.
+
+mytest.o : mytest.c smalloc.h
+	gcc -Wall -g -c mytest.c
 
 simpletest.o : simpletest.c smalloc.h
 	gcc -Wall -g -c simpletest.c

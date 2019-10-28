@@ -15,22 +15,20 @@ struct block *freelist;
 //A linked list of struct blocks that identify portions of memory that have been reserved by calls to smalloc. When a block is allocated it is placed at the front of this list, so the list is unordered.
 struct block *allocated_list;
 
-void remove_block(struct block *target_block, struct block *list_type, int size) {
-    if (target_block->size == 0) {
-        if (target_block == list_type) {
-            allocated_list = list_type->next; // truncate allocated
-        }
-        else {
-            struct block *curr = list_type;
-            while (curr != NULL) {
-                if (curr->next == target_block) {
-                    curr->next = curr->next->next; // truncate allocated
-                }
-                curr = curr->next;
-            }
-        }
-        free(target_block);
+void remove_block(struct block *target_block, struct block **list, int size) {
+    if (target_block == *list) {
+        *list = target_block->next; // truncate list
     }
+    else {
+        struct block *curr = *list;
+        while (curr != NULL) {
+            if (curr->next == target_block) {
+                curr->next = curr->next->next; // truncate allocated
+            }
+            curr = curr->next;
+        }
+    }
+    free(target_block);
 }
 
 //2. Grow one up, grow one down, or merge. This is called after remove_block.
@@ -87,7 +85,7 @@ int sfree(void *addr) {
         if (curr->addr == addr) {
             void *address = curr->addr;
             int size = curr->size;
-            remove_block(curr, allocated_list, size);
+            remove_block(curr, &allocated_list, size);
             // curr is now freed (but member values saved in local vars)
             grow_freelist(address, size); // adds removed node to freelist
             return 0; // success
@@ -108,7 +106,7 @@ int sfree(void *addr) {
 //Inserts to allocated_list a block of memory starting at freeblock and ending at size:
 void insert_block(struct block *freeblock, int size) {
     struct block *new_block = malloc(sizeof(struct block));
-    new_block->addr = (void*)((uintptr_t)freeblock->addr + (uintptr_t)size);
+    new_block->addr = freeblock->addr;
     new_block->size = size;
     new_block->next = allocated_list;
     allocated_list = new_block;
@@ -147,6 +145,7 @@ void *smalloc(unsigned int nbytes) {
             void *address = curr->addr;
             insert_block(curr, nbytes);
             shrink_freelist(curr, nbytes);
+            printf("Returning %08lx\n", (uintptr_t)address);
             return address;
         }
         curr = curr->next;
@@ -187,6 +186,16 @@ void mem_init(int size) {
     allocated_list = NULL;
 }
 
+void free_list(struct block *list) {
+    if(list == NULL) {
+        return;
+    }
+    struct block *next = list->next;
+    free(list);
+    free_list(next);
+}
+
 void mem_clean(){
-    //TODO
+    free_list(allocated_list);
+    free_list(freelist);
 }
