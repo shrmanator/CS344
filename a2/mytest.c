@@ -1,10 +1,13 @@
-/* I found the most technical part of this assignment
- to be freeing from the middle blocks of memory. To test
- the logic, I have set up the following:
+/* Freeing from the middle of an allocated block
+ was a technical part of this assignment and
+ involved multiple cases. I think the merge
+ case is an interesting operation, so let's put
+ throught the following test:
  
- This test will allocate 4 blocks of memory. Then,
-- free the top block
-- free the middle block
+ The test will allocate some memory to partition.
+ 4 blocks are allocated. Then,
+- the top block is freed
+- the middle block is freed
 - print results
 */
 
@@ -15,23 +18,24 @@
 #include <sys/mman.h>
 #include "smalloc.h"
 
+#define SIZE 4096 * 64
 
 /* Simple test for smalloc and sfree. */
 
 int main() {
     
-    mem_init(1000);
+    mem_init(SIZE);
 
     char *ptrs[10];
 
     ptrs[0] = smalloc(5);
-    ptrs[1] = smalloc(5);
-    ptrs[2] = smalloc(5);
-    ptrs[3] = smalloc(5);
-    write_to_mem(10, ptrs[0], 0);
-    write_to_mem(10, ptrs[1], 1);
-    write_to_mem(10, ptrs[2], 2);
-    write_to_mem(10, ptrs[3], 3);
+    ptrs[1] = smalloc(10);
+    ptrs[2] = smalloc(15);
+    ptrs[3] = smalloc(4);
+    write_to_mem(1000, ptrs[0], 0);
+    write_to_mem(1000, ptrs[1], 1);
+    write_to_mem(1000, ptrs[2], 2);
+    write_to_mem(1000, ptrs[3], 3);
 
     sfree(ptrs[0]);
     sfree(ptrs[2]);
