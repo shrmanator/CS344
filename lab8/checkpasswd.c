@@ -20,7 +20,6 @@ int main(void) {
     DO NOT add any prompts.  The only output of this program will be one
     of the messages defined above.
     */
-
     if(fgets(user_id, MAXLINE, stdin) == NULL) {
         perror("fgets");
         exit(1);
@@ -38,7 +37,7 @@ int main(void) {
         close(fd[1]);
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
-        execlp("./validate", NULL);
+        execlp("./validate", "validate", NULL);
     
     } else if (pid > 0){
         int status;

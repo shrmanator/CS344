@@ -10,17 +10,18 @@ int main(int argc, char **argv) {
         fprintf(stderr, "Usage: forkloop <iterations>\n");
         exit(1);
     }
-
+    
+    pid_t cur_process = getppid();
+    int exit_value;
     iterations = strtol(argv[1], NULL, 10);
     
-    int n = 0;
-    for (i = 0; i < iterations; i++) {
-        if (n == getppid()) {
-            int n = fork();
-        }
-        if (n < 0) {
-            perror("fork");
-            exit(1);
+    for (int i = 0; i < iterations; i++) {
+        if (cur_process == getppid()) {
+            if ((cur_process = fork()) == -1) {
+                perror("fork");
+                exit(1);
+            }
+            wait(&exit_value);
         }
         printf("ppid = %d, pid = %d, i = %d\n", getppid(), getpid(), i);
     }
