@@ -39,11 +39,11 @@ int main(void) {
         dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         execlp("./validate", NULL);
-        
-    } else {
+    
+    } else if (pid > 0){
         int status;
         close(fd[0]);
-        write(fd[1],user_id,10);
+        write(fd[1], user_id, 10);
         write(fd[1], password, 10);
         wait(&status);
         int temp = WEXITSTATUS(status);
@@ -56,6 +56,10 @@ int main(void) {
             case 0:
                 printf("Password verified");
         }
+        
+    } else {
+        perror("fork");
+        exit(1);
     }
     return 0;
 }
