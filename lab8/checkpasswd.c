@@ -32,6 +32,38 @@ int main(void) {
 
     // TODO
     
-
+    pid_t pid = fork();
+    
+    if (pid == 0) {
+        int filefd = open("pass.txt", O_RDWR | S_IRWXU | O_TRUNC);
+            if (filefd == -1) {
+                perror("open");
+            }
+        if (dup2(filefd, fileno(stdout)) == -1) {
+            perror("dup2");
+        }
+        close(filefd);
+        execlp("./validate", NULL);
+        perror("exec");
+        exit(1);
+    }
+    else if (pid < 0){
+        perror("fork");
+        exit(1);
+    }
+    else {
+        int status = wait(pid);
+        if (wait(&status) != -1) {
+            if (WIFEXITED(status)) {
+                fprintf(stderr, "Process exited with %d\n",
+                        WEXITSTATUS(status));
+            } else {
+                fprintf(stderr, "Process teminated\n");
+            }
+        }
+    } else {
+        perror("fork");
+        exit(1);
+    }
     return 0;
 }
