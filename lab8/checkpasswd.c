@@ -29,41 +29,37 @@ int main(void) {
         perror("fgets");
         exit(1);
     }
-
     // TODO
-    
-    pid_t pid = fork();
-    
-    if (pid == 0) {
-        int filefd = open("pass.txt", O_RDWR | S_IRWXU | O_TRUNC);
-            if (filefd == -1) {
-                perror("open");
-            }
-        if (dup2(filefd, fileno(stdout)) == -1) {
-            perror("dup2");
-        }
-        close(filefd);
+    int fd[2];
+    pipe(fd);
+
+    pid_t pid;
+    pid = fork();
+    if (pid == 0){
+        close(fd[1]);
+        dup2(fd[0],STDIN_FILENO);
+        close(fd[0]);
         execlp("./validate", NULL);
-        perror("exec");
-        exit(1);
-    }
-    else if (pid < 0){
-        perror("fork");
-        exit(1);
-    }
-    else {
-        int status = wait(pid);
-        if (wait(&status) != -1) {
-            if (WIFEXITED(status)) {
-                fprintf(stderr, "Process exited with %d\n",
-                        WEXITSTATUS(status));
-            } else {
-                fprintf(stderr, "Process teminated\n");
-            }
-        }
+        
     } else {
-        perror("fork");
-        exit(1);
+        int status;
+        close(fd[0]);
+        write(fd[1],user_id,10);
+        write(fd[1], password, 10);
+        wait(&status);
+        int temp = WEXITSTATUS(status);
+        close(fd[1]);
+
+        printf("%d\n",temp);
+        switch(temp){
+            case 2:
+                printf("Invalid password");
+            case 3:
+                printf("No such user");
+            case 0:
+                printf("Password verified");
+        }
     }
     return 0;
 }
+
