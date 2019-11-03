@@ -46,26 +46,20 @@ int main(void) {
         write(fd[1], user_id, 10);
         write(fd[1], password, 10);
         wait(&status);
+        
         int exitstatus = WEXITSTATUS(status);
         close(fd[1]);
         
-        if (exitstatus == 0) {
-            // user id and password match.
-            printf(SUCCESS);
+        switch(exitstatus) {
+            case 0:
+                printf(SUCCESS);
+            case 1:
+                printf("there is an error");
+            case 2:
+                printf(INVALID);
+            case 3:
+                printf(NO_USER);
         }
-        else if (exitstatus == 2) {
-            // user id found but password does not match
-            printf(INVALID);
-        }
-        else if (exitstatus == 3) {
-            // if the user id is not found in the password file.
-            printf(NO_USER);
-        }
-        else {
-            // there is an error.
-            printf("there is an error");
-        }
-    
     } else {
         perror("fork");
         exit(1);
