@@ -58,12 +58,12 @@ int main(void) {
             printf(INVALID);
         }
         else if (exitstatus == 3) {
-            // if the user id is not found in the password file. 
+            // if the user id is not found in the password file.
             printf(NO_USER);
         }
         else {
             // there is an error.
-            printf(INVALID);
+            printf("there is an error");
         }
     
     } else {
