@@ -33,11 +33,10 @@ int main(void) {
     int fd[2];
     pipe(fd);
 
-    pid_t pid;
-    pid = fork();
+    pid_t pid = fork();
     if (pid == 0){
         close(fd[1]);
-        dup2(fd[0],STDIN_FILENO);
+        dup2(fd[0], STDIN_FILENO);
         close(fd[0]);
         execlp("./validate", NULL);
         
@@ -49,8 +48,6 @@ int main(void) {
         wait(&status);
         int temp = WEXITSTATUS(status);
         close(fd[1]);
-
-        printf("%d\n",temp);
         switch(temp){
             case 2:
                 printf("Invalid password");
@@ -62,4 +59,3 @@ int main(void) {
     }
     return 0;
 }
-

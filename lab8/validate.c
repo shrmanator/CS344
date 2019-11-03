@@ -25,7 +25,8 @@ int main(void){
     int n, user_length;
     char userid[MAXLINE];
     char password[MAXLINE];
-
+    
+    // on success, read returns the number of bytes read.
     if ((n = read(STDIN_FILENO, userid, MAX_PASSWORD)) == -1) {
         perror("read");
         exit(1);
