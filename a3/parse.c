@@ -58,6 +58,10 @@ void print_rules(Rule *rules){
     }
 }
 
+Action *actions;
+Dependency *dependencies;
+Rule *rules;
+
 /* Create the rules data structure and return it.
    Figure out what to do with each line from the open file fp
      - If a line starts with a tab it is an action line for the current rule
@@ -69,19 +73,51 @@ void print_rules(Rule *rules){
        ignored.
  */
 Rule *parse_file(FILE *fp) {
+    // don't forget to free Rule in main!
     if(fp == NULL) {
         perror("Error opening file");
         exit(1);
     }
-    char line[100];
-    while (fgets(line, sizeof(line), fp)) {
-        if (line[0] == '\t') {
-            // action line:
-            
-            
+    Rule *new_rule = malloc(sizeof(Rule));
+    int i;
+    char line_dirty[256];
+    char line_clean[256];
+    while (fgets(line_dirty, sizeof(line_dirty), fp)) {
+        if (line_dirty[0] != '\n') {
+            // removing all chars that should be ignored:
+            for (i = 0; i < sizeof(line_dirty); i++) {
+                if (line_dirty[i] != '#' ||
+                    line_dirty[i] != '\t' ) {
+                    line_clean[i] = line_dirty[i];
+                }
+            }
         }
+        add_target(&new_rule, line_clean);
+        add_dependency(&new_rule, line_clean);
+        add_action(&new_rule, line_clean);
     }
     fclose(fp);
-    
     return 0;
+}
+
+void add_target(Rule *rule, char *array) {
+    int count = 0;
+    for (int i = 0; i < sizeof(array); i++) {
+        if (array[
+        rule->target = malloc(sizeof())
+    }
+}
+
+void add_dependency(Rule *rule, char *dependency) {
+    
+}
+
+//Enters "rule" and adds action to "actions" list:
+//void add_action(Rule *rule, char *action) {
+//    rule->
+//}
+
+int main() {
+    FILE *file = fopen("/Users/DovSherman/Desktop/sherma73/a3/Makefile", "r");
+    parse_file(file);
 }
