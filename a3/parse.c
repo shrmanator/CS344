@@ -67,7 +67,6 @@ void add_target(Rule *rule, char *line_clean) {
             rule->target[i] = line_clean[i];
         }
     }
-    printf("%s\n", rule->target);
 }
 
 void add_dependency(Rule *rule, char *line_clean) {
