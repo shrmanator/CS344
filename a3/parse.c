@@ -58,9 +58,24 @@ void print_rules(Rule *rules){
     }
 }
 
-Action *actions;
-Dependency *dependencies;
-Rule *rules;
+void add_target(Rule *rule, char *line_clean) {
+    rule->target = malloc(sizeof(500));
+    for (int i = 0; i < sizeof(line_clean); i++) {
+        if (line_clean[i] == ' ') {
+            break;
+        } else {
+            rule->target[i] = line_clean[i];
+        }
+    }
+    printf("%s\n", rule->target);
+}
+
+void add_dependency(Rule *rule, char *line_clean) {
+    
+}
+
+void add_action(Rule *rule, char *line_clean) {
+}
 
 /* Create the rules data structure and return it.
    Figure out what to do with each line from the open file fp
@@ -81,43 +96,22 @@ Rule *parse_file(FILE *fp) {
     Rule *new_rule = malloc(sizeof(Rule));
     int i;
     char line_dirty[256];
-    char line_clean[256];
     while (fgets(line_dirty, sizeof(line_dirty), fp)) {
-        if (line_dirty[0] != '\n') {
-            // removing all chars that should be ignored:
-            for (i = 0; i < sizeof(line_dirty); i++) {
-                if (line_dirty[i] != '#' ||
-                    line_dirty[i] != '\t' ) {
-                    line_clean[i] = line_dirty[i];
-                }
+        if (line_dirty[0] != '#' && line_dirty[0] != ' ') {
+            if (line_dirty[0] != '\t') {
+                //add target to new_rule->target:
+                add_target(new_rule, line_dirty);
             }
         }
-        add_target(&new_rule, line_clean);
-        add_dependency(&new_rule, line_clean);
-        add_action(&new_rule, line_clean);
     }
     fclose(fp);
-    return 0;
+    return new_rule;
 }
 
-void add_target(Rule *rule, char *array) {
-    int count = 0;
-    for (int i = 0; i < sizeof(array); i++) {
-        if (array[
-        rule->target = malloc(sizeof())
-    }
-}
 
-void add_dependency(Rule *rule, char *dependency) {
-    
-}
-
-//Enters "rule" and adds action to "actions" list:
-//void add_action(Rule *rule, char *action) {
-//    rule->
-//}
 
 int main() {
     FILE *file = fopen("/Users/DovSherman/Desktop/sherma73/a3/Makefile", "r");
     parse_file(file);
+    
 }
