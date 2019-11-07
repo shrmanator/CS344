@@ -8,7 +8,6 @@
 
 #include "pmake.h"
 
-
 /* Print the list of actions */
 void print_actions(Action *act) {
     while(act != NULL) {
@@ -70,10 +69,19 @@ void print_rules(Rule *rules){
        ignored.
  */
 Rule *parse_file(FILE *fp) {
-
-    // TODO
+    if(fp == NULL) {
+        perror("Error opening file");
+        exit(1);
+    }
+    char line[100];
+    while (fgets(line, sizeof(line), fp)) {
+        if (line[0] == '\t') {
+            // action line:
+            
+            
+        }
+    }
+    fclose(fp);
     
-
-    return NULL;
+    return 0;
 }
-
