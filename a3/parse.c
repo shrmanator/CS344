@@ -58,23 +58,58 @@ void print_rules(Rule *rules){
     }
 }
 
-void add_target(Rule *rule, char *line_clean) {
-    rule->target = malloc(sizeof(500));
-    for (int i = 0; i < sizeof(line_clean); i++) {
-        if (line_clean[i] == ' ') {
-            break;
+char *parse_target(char *line) {
+    char *target = malloc(500);
+    for (int i = 0; line[i] != '\0'; i++) {
+        if (line[i] == ':' || line[i] == ' ') {
+            return;
         } else {
-            rule->target[i] = line_clean[i];
+            target[i] = line[i];
+            target[i + 1] = '\0';
         }
+    }
+    return target;
+}
+
+void parse_action(Rule *rule, char *line) {
+    printf("%s", line);
+    rule->actions = malloc(sizeof(Action));
+    if (line[0] == '.' && line[1] == '/') {
+        rule->actions = line;
     }
 }
 
-void add_dependency(Rule *rule, char *line_clean) {
-    
+Rule *get_rule(char *target, Rule *rules) {
+    Rule *curr = rules;
+    while (curr !=NULL) {
+        if (strcmp(curr->target, target) == 0) {
+            return curr;
+        }
+        curr = curr->next_rule;
+    }
+    return NULL;
 }
 
-void add_action(Rule *rule, char *line_clean) {
+Dependency *parse_dependencies(char *line, Rule *rules) {
+    int coln_index;
+    for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; i++) {}
+    char *curr;
+    Dependency *first = NULL;
+    Dependency *previous = NULL;
+    while ((curr = 1) != NULL) {
+        Dependency *dep = malloc(sizeof(Dependency));
+        dep->next_rule = NULL;
+        dep->rule = get_rule(curr, rules);
+        if (first == NULL) {
+            first = dep;
+        } else {
+            previous->next_rule = dep;
+        }
+        previous = dep;
+    }
+    return first;
 }
+
 
 /* Create the rules data structure and return it.
    Figure out what to do with each line from the open file fp
@@ -92,14 +127,19 @@ Rule *parse_file(FILE *fp) {
         perror("Error opening file");
         exit(1);
     }
+    char line[256];
     Rule *new_rule = malloc(sizeof(Rule));
-    int i;
-    char line_dirty[256];
-    while (fgets(line_dirty, sizeof(line_dirty), fp)) {
-        if (line_dirty[0] != '#' && line_dirty[0] != ' ') {
-            if (line_dirty[0] != '\t') {
+    while (fgets(line, sizeof(line), fp)) {
+        if (line[0] != '#' && line[0] != ' ') {
+            if (line[0] == '\t') {
+                add_action(new_rule, line);
+            }
+            else {
                 //add target to new_rule->target:
-                add_target(new_rule, line_dirty);
+                add_target(new_rule, line);
+                //create and populate next Rule:
+                Rule *next_rule = malloc(sizeof(Rule));
+                new_rule->next_rule = next_rule;
             }
         }
     }
@@ -111,6 +151,9 @@ Rule *parse_file(FILE *fp) {
 
 int main() {
     FILE *file = fopen("/Users/DovSherman/Desktop/sherma73/a3/Makefile", "r");
-    parse_file(file);
-    
+    Rule *rule = parse_file(file);
+    while (rule != NULL) {
+        printf("%s", rule->target);
+        rule = rule->next_rule;
+    }
 }
