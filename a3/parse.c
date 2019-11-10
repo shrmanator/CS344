@@ -71,12 +71,27 @@ char *parse_target(char *line) {
     return target;
 }
 
-void parse_action(Rule *rule, char *line) {
-    printf("%s", line);
-    rule->actions = malloc(sizeof(Action));
-    if (line[0] == '.' && line[1] == '/') {
-        rule->actions = line;
+// an array of pointers to null-terminated strings that
+// represent the argument list available to the new program.
+char **parse_action(char *line, Rule *rules) {
+    int array_size = 50;
+    
+    //truncate line to begin after the tab:
+    line = line + 1;
+    
+    char *line_dup, *curr, **args;
+    args = malloc(array_size);
+    line_dup = strdup(line);
+    
+    int index = 0;
+    while((curr = strsep(&line_dup," ")) != NULL ) {
+        char *arg = malloc(strlen(curr));
+        for (int j = 0; j < strlen(curr); j++) {
+            arg[j] = curr[j];
+        }
+        index++;
     }
+    return args;
 }
 
 //Iterates thru list of rules and returns rule with target:
@@ -91,29 +106,32 @@ Rule *get_rule(char *target, Rule *rules) {
     return NULL;
 }
 
-// dep == [(rule with target), next_dep]
-// [dep] -> NULL
-
-// it's easy if you loop through and for the first one,
-
+// populate each rule in rules with their dependencies:
+// the function:
+// 1. creates a linked-list of Dependencies
+// 2. returns that linked-list
 Dependency *parse_dependencies(char *line, Rule *rules) {
+    char *target = line[0];
+    char *dependency, *dep_target;
+    Dependency *first, *previous;
     int coln_index;
+    
     for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; i++) {}
+    // a dependency is the name of a rule:
+    dependency = strdup(line + coln_index);
     
-    char *line = line + coln_index; // rest of string after "target : "
-    
-    Dependency *first = NULL;
-    Dependency *previous = NULL;
-    while (// what are we iterating over?) != NULL) {
-        Dependency *dep = malloc(sizeof(Dependency));
-        dep->rule = get_rule(parse_target(line), rules);
-        dep->next_rule = NULL;
+    first = NULL;
+    previous = NULL;
+    while (dep_target = strsep(&dependency, " ") != NULL) {
+        Dependency *new_dep = malloc(sizeof(Dependency));
+        new_dep->rule = get_rule(parse_target(dep_target));
+        new_dep->next_rule = NULL;
         if (first == NULL) {
-            first = dep;
+            first = new_dep;
         } else {
-            previous->next_rule = dep;
+            previous->next_rule = new_dep;
         }
-        previous = dep;
+        previous = new_dep;
     }
     return first;
 }
@@ -135,19 +153,23 @@ Rule *parse_file(FILE *fp) {
         perror("Error opening file");
         exit(1);
     }
-    char line[256];
-    Rule *new_rule = malloc(sizeof(Rule));
+    char *line;
+    Rule *first, *prev, *new_rule = NULL;
     while (fgets(line, sizeof(line), fp)) {
+        new_rule = malloc(sizeof(Rule));
         if (line[0] != '#' && line[0] != ' ') {
             if (line[0] == '\t') {
-                add_action(new_rule, line);
+                // line is an action:
+                new_rule->actions = parse_action(line, new_rule);
+            } else {
+                new_rule->dependencies = parse_dependencies(line, new_rule);
             }
-            else {
-                add_target(new_rule, line);
-                Rule *next_rule =  malloc(sizeof(Rule));
-                new_rule->next_rule = next_rule;
-            }
+        if (first == NULL) {
+                first = new_rule;
+        } else {
+                prev->next_rule = new_rule;
         }
+        prev = new_rule;
     }
     fclose(fp);
     return new_rule;
@@ -157,9 +179,5 @@ Rule *parse_file(FILE *fp) {
 
 int main() {
     FILE *file = fopen("/Users/DovSherman/Desktop/sherma73/a3/Makefile", "r");
-    Rule *rule = parse_file(file);
-    while (rule != NULL) {
-        printf("%s", rule->target);
-        rule = rule->next_rule;
-    }
+    print_rules(parse_file(file));
 }
