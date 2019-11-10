@@ -62,7 +62,7 @@ char *parse_target(char *line) {
     char *target = malloc(500);
     for (int i = 0; line[i] != '\0'; i++) {
         if (line[i] == ':' || line[i] == ' ') {
-            return;
+            break;
         } else {
             target[i] = line[i];
             target[i + 1] = '\0';
@@ -79,6 +79,7 @@ void parse_action(Rule *rule, char *line) {
     }
 }
 
+//Iterates thru list of rules and returns rule with target:
 Rule *get_rule(char *target, Rule *rules) {
     Rule *curr = rules;
     while (curr !=NULL) {
@@ -90,16 +91,23 @@ Rule *get_rule(char *target, Rule *rules) {
     return NULL;
 }
 
+// dep == [(rule with target), next_dep]
+// [dep] -> NULL
+
+// it's easy if you loop through and for the first one,
+
 Dependency *parse_dependencies(char *line, Rule *rules) {
     int coln_index;
     for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; i++) {}
-    char *curr;
+    
+    char *line = line + coln_index; // rest of string after "target : "
+    
     Dependency *first = NULL;
     Dependency *previous = NULL;
-    while ((curr = 1) != NULL) {
+    while (// what are we iterating over?) != NULL) {
         Dependency *dep = malloc(sizeof(Dependency));
+        dep->rule = get_rule(parse_target(line), rules);
         dep->next_rule = NULL;
-        dep->rule = get_rule(curr, rules);
         if (first == NULL) {
             first = dep;
         } else {
@@ -135,10 +143,8 @@ Rule *parse_file(FILE *fp) {
                 add_action(new_rule, line);
             }
             else {
-                //add target to new_rule->target:
                 add_target(new_rule, line);
-                //create and populate next Rule:
-                Rule *next_rule = malloc(sizeof(Rule));
+                Rule *next_rule =  malloc(sizeof(Rule));
                 new_rule->next_rule = next_rule;
             }
         }
