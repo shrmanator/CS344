@@ -58,6 +58,18 @@ void print_rules(Rule *rules){
     }
 }
 
+//Iterates thru list of rules and returns rule with target:
+Rule *get_rule(char *target, Rule *rules) {
+    Rule *curr = rules;
+    while (curr !=NULL) {
+        if (strcmp(curr->target, target) == 0) {
+            return curr;
+        }
+        curr = curr->next_rule;
+    }
+    return NULL;
+}
+
 char *parse_target(char *line) {
     char *target = malloc(500);
     for (int i = 0; line[i] != '\0'; i++) {
@@ -73,37 +85,33 @@ char *parse_target(char *line) {
 
 // an array of pointers to null-terminated strings that
 // represent the argument list available to the new program.
-char **parse_action(char *line, Rule *rules) {
-    int array_size = 50;
-    
-    //truncate line to begin after the tab:
-    line = line + 1;
-    
-    char *line_dup, *curr, **args;
-    args = malloc(array_size);
-    line_dup = strdup(line);
-    
-    int index = 0;
-    while((curr = strsep(&line_dup," ")) != NULL ) {
-        char *arg = malloc(strlen(curr));
-        for (int j = 0; j < strlen(curr); j++) {
-            arg[j] = curr[j];
-        }
-        index++;
-    }
-    return args;
-}
+Action *parse_action(char **lines, Rule *rules) {
+    int max_array_size = 256;
+    char *line_dup, *curr1, **args;
 
-//Iterates thru list of rules and returns rule with target:
-Rule *get_rule(char *target, Rule *rules) {
-    Rule *curr = rules;
-    while (curr !=NULL) {
-        if (strcmp(curr->target, target) == 0) {
-            return curr;
+    //truncate line to begin after the tab
+    //and copy it into a new string
+    //to satisfy the later strsep call:
+    line_dup = strdup(line + 1);
+    
+    // create action:
+    Action *action = malloc(sizeof(Action));
+    action->args = malloc(max_array_size);
+    // insert action strings:
+    while((curr1 = strsep(&line_dup, " ")) != NULL ) {
+        for (int i = 0; i < max_array_size; i++) {
+            action->args[j] = curr1;
         }
-        curr = curr->next_rule;
     }
-    return NULL;
+    //insert action at end of action->next_dep:
+    Action *curr2 = rules->actions;
+    while (curr2 != NULL) {
+        curr2 = curr2->next_act;
+    }
+    curr2 = action;
+    curr2->next_act = NULL;
+    
+    return action;
 }
 
 // populate each rule in rules with their dependencies:
@@ -113,23 +121,21 @@ Rule *get_rule(char *target, Rule *rules) {
 Dependency *parse_dependencies(char *line, Rule *rules) {
     char *target = line[0];
     char *dependency, *dep_target;
-    Dependency *first, *previous;
-    int coln_index;
     
-    for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; i++) {}
+    int coln_index;
+    for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; coln_index++) {}
+    
     // a dependency is the name of a rule:
     dependency = strdup(line + coln_index);
-    
-    first = NULL;
-    previous = NULL;
-    while (dep_target = strsep(&dependency, " ") != NULL) {
+    Dependency *first, *previous = NULL;
+    while ((dep_target = strsep(&dependency, " ")) != NULL) {
         Dependency *new_dep = malloc(sizeof(Dependency));
-        new_dep->rule = get_rule(parse_target(dep_target));
-        new_dep->next_rule = NULL;
+        new_dep->rule = get_rule(parse_target(dep_target), rules);
+        new_dep->next_dep = NULL;
         if (first == NULL) {
             first = new_dep;
         } else {
-            previous->next_rule = new_dep;
+            previous->next_dep = new_dep;
         }
         previous = new_dep;
     }
@@ -153,17 +159,18 @@ Rule *parse_file(FILE *fp) {
         perror("Error opening file");
         exit(1);
     }
-    char *line;
+    char *line[256];
     Rule *first, *prev, *new_rule = NULL;
     while (fgets(line, sizeof(line), fp)) {
         new_rule = malloc(sizeof(Rule));
         if (line[0] != '#' && line[0] != ' ') {
             if (line[0] == '\t') {
-                // line is an action:
+                // line is a single action:
                 new_rule->actions = parse_action(line, new_rule);
             } else {
                 new_rule->dependencies = parse_dependencies(line, new_rule);
             }
+        }
         if (first == NULL) {
                 first = new_rule;
         } else {
