@@ -85,14 +85,14 @@ char *parse_target(char *line) {
 
 // an array of pointers to null-terminated strings that
 // represent the argument list available to the new program.
-Action *parse_action(char **lines, Rule *rules) {
+Action *parse_action(char *lines, Rule *rules) {
     int max_array_size = 256;
-    char *line_dup, *curr1, **args;
+    char *line_dup, *curr1;
 
     //truncate line to begin after the tab
     //and copy it into a new string
     //to satisfy the later strsep call:
-    line_dup = strdup(line + 1);
+    line_dup = strdup(lines + 1);
     
     // create action:
     Action *action = malloc(sizeof(Action));
@@ -100,7 +100,7 @@ Action *parse_action(char **lines, Rule *rules) {
     // insert action strings:
     while((curr1 = strsep(&line_dup, " ")) != NULL ) {
         for (int i = 0; i < max_array_size; i++) {
-            action->args[j] = curr1;
+            action->args[i] = curr1;
         }
     }
     //insert action at end of action->next_dep:
@@ -119,7 +119,6 @@ Action *parse_action(char **lines, Rule *rules) {
 // 1. creates a linked-list of Dependencies
 // 2. returns that linked-list
 Dependency *parse_dependencies(char *line, Rule *rules) {
-    char *target = line[0];
     char *dependency, *dep_target;
     
     int coln_index;
@@ -159,7 +158,7 @@ Rule *parse_file(FILE *fp) {
         perror("Error opening file");
         exit(1);
     }
-    char *line[256];
+    char line[256];
     Rule *first, *prev, *new_rule = NULL;
     while (fgets(line, sizeof(line), fp)) {
         new_rule = malloc(sizeof(Rule));
