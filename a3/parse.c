@@ -58,7 +58,7 @@ void print_rules(Rule *rules){
     }
 }
 
-//Iterates thru list of rules and returns rule with target:
+//Returns Rule of the corresponding target:
 Rule *get_rule(char *target, Rule *rules) {
     Rule *curr = rules;
     while (curr !=NULL) {
@@ -70,6 +70,7 @@ Rule *get_rule(char *target, Rule *rules) {
     return NULL;
 }
 
+//Returns input line's target (if one exists):
 char *parse_target(char *line) {
     char *target = malloc(500);
     for (int i = 0; line[i] != '\0'; i++) {
@@ -87,30 +88,28 @@ char *parse_target(char *line) {
 // represent the argument list available to the new program.
 Action *parse_action(char *lines, Rule *rules) {
     int max_array_size = 256;
-    char *line_dup, *curr1;
-
-    //truncate line to begin after the tab
-    //and copy it into a new string
-    //to satisfy the later strsep call:
-    line_dup = strdup(lines + 1);
+    lines = lines + 1;
     
+    char *curr1;
     // create action:
     Action *action = malloc(sizeof(Action));
     action->args = malloc(max_array_size);
     // insert action strings:
-    while((curr1 = strsep(&line_dup, " ")) != NULL ) {
-        for (int i = 0; i < max_array_size; i++) {
-            action->args[i] = curr1;
+    int i = 0;
+    while((curr1 = strsep(&lines, " ")) != NULL ) {
+        action->args[i++] = curr1;
+    }
+    if (rules->actions == NULL) {
+        rules->actions = action;
+    } else {
+        //insert action at end of action->next_dep:
+        Action *curr2 = rules->actions;
+        while (curr2->next_act != NULL) {
+            curr2 = curr2->next_act;
         }
+        curr2->next_act = action;
     }
-    //insert action at end of action->next_dep:
-    Action *curr2 = rules->actions;
-    while (curr2 != NULL) {
-        curr2 = curr2->next_act;
-    }
-    curr2 = action;
-    curr2->next_act = NULL;
-    
+    action->next_act = NULL;
     return action;
 }
 
@@ -123,13 +122,13 @@ Dependency *parse_dependencies(char *line, Rule *rules) {
     
     int coln_index;
     for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; coln_index++) {}
-    
-    // a dependency is the name of a rule:
-    dependency = strdup(line + coln_index);
+
+    line += coln_index + 2; // + 2 counts for whitespace.
     Dependency *first, *previous = NULL;
+    
     while ((dep_target = strsep(&dependency, " ")) != NULL) {
         Dependency *new_dep = malloc(sizeof(Dependency));
-        new_dep->rule = get_rule(parse_target(dep_target), rules);
+        new_dep->rule = get_rule(dep_target, rules);
         new_dep->next_dep = NULL;
         if (first == NULL) {
             first = new_dep;
@@ -159,31 +158,46 @@ Rule *parse_file(FILE *fp) {
         exit(1);
     }
     char line[256];
-    Rule *first, *prev, *new_rule = NULL;
+    Rule *first = NULL, *prev = NULL, *new_rule = NULL;
+    
     while (fgets(line, sizeof(line), fp)) {
-        new_rule = malloc(sizeof(Rule));
-        if (line[0] != '#' && line[0] != ' ') {
-            if (line[0] == '\t') {
-                // line is a single action:
-                new_rule->actions = parse_action(line, new_rule);
-            } else {
-                new_rule->dependencies = parse_dependencies(line, new_rule);
-            }
+        if (is_comment_or_empty(line)) {
+            continue;
         }
-        if (first == NULL) {
-                first = new_rule;
+        if (line[0] == '\t') {
+            // line is a single action:
+            prev->actions = parse_action(line, prev);
         } else {
-                prev->next_rule = new_rule;
+            new_rule = malloc(sizeof(Rule));
+            new_rule->next_rule = NULL;
+            new_rule->target = parse_target(line);
+            if (first == NULL) {
+                    first = new_rule;
+            } else if (prev != NULL) {
+                    prev->next_rule = new_rule;
+            }
+            prev = new_rule;
         }
-        prev = new_rule;
+    }
+    Rule *curr = first;
+    fseek(fp, 0, SEEK_SET);
+    while (fgets(line, sizeof(line), fp)) {
+        if (is_comment_or_empty(line)) {
+            continue;
+        }
+        if (line[0] == '\t') {
+            // line is a single action:
+            continue;
+        }
+        curr->dependencies = parse_dependencies(line, first);
+        curr = curr->next_rule;
     }
     fclose(fp);
-    return new_rule;
+    return first;
 }
 
-
-
 int main() {
-    FILE *file = fopen("/Users/DovSherman/Desktop/sherma73/a3/Makefile", "r");
+    FILE *file = fopen("/Users/DovSherman/Desktop/sherma73/a3/Makefile2" ,"r");
+    
     print_rules(parse_file(file));
 }
