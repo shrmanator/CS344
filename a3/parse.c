@@ -129,7 +129,8 @@ Action *parse_action(char *lines, Rule *rules) {
 // 1. creates a linked-list of Dependencies
 // 2. returns that linked-list
 Dependency *parse_dependencies(char *line, Rule *rules) {
-    char *dependency, *dep_target;
+    char *dep_target;
+    printf("line is %s\n", line);
     
     int coln_index;
     for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; coln_index++) {}
@@ -137,7 +138,7 @@ Dependency *parse_dependencies(char *line, Rule *rules) {
     line += coln_index + 2; // + 2 counts for whitespace.
     Dependency *first, *previous = NULL;
     
-    while ((dep_target = strsep(&dependency, " ")) != NULL) {
+    while ((dep_target = strsep(&line, " ")) != NULL) {
         Dependency *new_dep = malloc(sizeof(Dependency));
         new_dep->rule = get_rule(dep_target, rules);
         new_dep->next_dep = NULL;
@@ -208,7 +209,7 @@ Rule *parse_file(FILE *fp) {
 }
 
 int main() {
-    FILE *file = fopen("/Users/DovSherman/Desktop/sherma73/a3/Makefile2" ,"r");
+    FILE *file = fopen("Makefile2" ,"r");
     
     print_rules(parse_file(file));
 }
