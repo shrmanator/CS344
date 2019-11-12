@@ -60,14 +60,25 @@ void print_rules(Rule *rules){
 
 //Returns Rule of the corresponding target:
 Rule *get_rule(char *target, Rule *rules) {
+    printf("getting rules\n");
     Rule *curr = rules;
     while (curr !=NULL) {
+        printf("target: %s\n", target);
         if (strcmp(curr->target, target) == 0) {
             return curr;
         }
         curr = curr->next_rule;
     }
-    return NULL;
+    curr = rules;
+    while (curr->next_rule !=NULL) {
+        curr = curr->next_rule;
+    }
+    Rule *new_rule = malloc(sizeof(Rule));
+    new_rule->target = target;
+    new_rule->dependencies = NULL;
+    curr->next_rule = new_rule;
+    new_rule->next_rule = NULL;
+    return new_rule;
 }
 
 //Returns input line's target (if one exists):
