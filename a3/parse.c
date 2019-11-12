@@ -76,6 +76,7 @@ Rule *get_rule(char *target, Rule *rules) {
     Rule *new_rule = malloc(sizeof(Rule));
     new_rule->target = target;
     new_rule->dependencies = NULL;
+    new_rule->actions = NULL;
     curr->next_rule = new_rule;
     new_rule->next_rule = NULL;
     return new_rule;
@@ -182,6 +183,7 @@ Rule *parse_file(FILE *fp) {
         } else {
             new_rule = malloc(sizeof(Rule));
             new_rule->next_rule = NULL;
+            new_rule->actions = NULL;
             new_rule->target = parse_target(line);
             if (first == NULL) {
                     first = new_rule;
