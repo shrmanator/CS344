@@ -111,6 +111,7 @@ Action *parse_action(char *lines, Rule *rules) {
     while((curr1 = strsep(&lines, " ")) != NULL ) {
         action->args[i++] = curr1;
     }
+    action->args[i] = NULL;
     if (rules->actions == NULL) {
         rules->actions = action;
     } else {
