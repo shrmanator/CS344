@@ -88,7 +88,7 @@ Action *parse_action(char *lines) {
     // insert action strings:
     int i = 0;
     while((curr1 = strsep(&lines, " ")) != NULL ) {
-        action->args[i++] = curr1;
+        action->args[i++] = strdup(curr1);
     }
     action->args[i] = NULL;
     action->next_act = NULL;
@@ -112,6 +112,8 @@ Dependency *parse_dependencies(char *line, Rule *rules) {
     while ((dep_target = strsep(&line, " ")) != NULL) {
         Dependency *new_dep = malloc(sizeof(Dependency));
         new_dep->rule = get_rule(dep_target, rules);
+        printf("got rule %p from target %s", new_dep->rule, dep_target);
+        
         new_dep->next_dep = NULL;
         if (first == NULL) {
             first = new_dep;
