@@ -107,7 +107,7 @@ Dependency *parse_dependencies(char *line, Rule *rules) {
     for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; coln_index++) {}
 
     line += coln_index + 2; // + 2 counts for whitespace.
-    Dependency *first, *previous = NULL;
+    Dependency *first = NULL, *previous = NULL;
     
     while ((dep_target = strsep(&line, " ")) != NULL) {
         Dependency *new_dep = malloc(sizeof(Dependency));
