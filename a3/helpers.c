@@ -61,10 +61,8 @@ char *args_to_string(char **args, char *buffer, int size) {
 }
 
 Rule *get_rule(char *target, Rule *rules) {
-    printf("getting rules\n");
     Rule *curr = rules;
     while (curr !=NULL) {
-        printf("target: %s\n", target);
         if (strcmp(curr->target, target) == 0) {
             return curr;
         }
