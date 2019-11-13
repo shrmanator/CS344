@@ -98,7 +98,7 @@ char *parse_target(char *line) {
 
 // an array of pointers to null-terminated strings that
 // represent the argument list available to the new program.
-Action *parse_action(char *lines, Rule *rules) {
+Action *parse_action(char *lines) {
     int max_array_size = 256;
     lines = lines + 1;
     
@@ -112,16 +112,6 @@ Action *parse_action(char *lines, Rule *rules) {
         action->args[i++] = curr1;
     }
     action->args[i] = NULL;
-    if (rules->actions == NULL) {
-        rules->actions = action;
-    } else {
-        //insert action at end of action->next_dep:
-        Action *curr2 = rules->actions;
-        while (curr2->next_act != NULL) {
-            curr2 = curr2->next_act;
-        }
-        curr2->next_act = action;
-    }
     action->next_act = NULL;
     return action;
 }
@@ -180,7 +170,7 @@ Rule *parse_file(FILE *fp) {
         }
         if (line[0] == '\t') {
             // line is a single action:
-            prev->actions = parse_action(line, prev);
+            prev->actions = parse_action(line);
         } else {
             new_rule = malloc(sizeof(Rule));
             new_rule->next_rule = NULL;
