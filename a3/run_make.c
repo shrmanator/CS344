@@ -9,9 +9,16 @@
 #include <time.h>
 #include "pmake.h"
 
-/* Returns Rule struct corresponding
-*/ to target, or NULL if not exist.
-Rule *get_target_rule(char *target, Rule *rules) {
+/*
+ Returns creation time of rule in millisecs.
+ */
+char *get_last_modified_time(char *rule) {
+    struct stat attr;
+    stat(path, &attr);
+    return ctime(&attr.st_mtime));
+}
+
+Rule *get_rule(char *target, Rule *rules) {
     Rule *curr = rules;
     while (curr !=NULL) {
         if (strcmp(curr->target, target) == 0) {
@@ -24,27 +31,60 @@ Rule *get_target_rule(char *target, Rule *rules) {
 
 /* Returns 1 if dep newer
 */ than target, 0 otherwise.
-int dep_newer_than_target() {
+int dep_newer_than_target(char *target, Rule *deps) {
+    char *dep_date; // last time dependency was modified
+    char *target_date = get_last_modified_time(get_rule(target));
     
+    Rule *curr;
+    while (curr != NULL) {
+        dep_date = get_last_modified_time(get_rule(curr));
+        if (difftime(target_mod_date, dep_mod_date) < 0) {
+            return 1;
+        }
+        curr = curr->next_rule;
+    }
+    return 0;
+}
+
+execute_all_actions(Rule *rules) {
+    
+    }
 }
 
 
-execute_all_actions(Rule *rules) {
-    struct stat sb;
-    printf("Last file modification:   %s", ctime(&sb.st_mtime));
+
+
+
+
+
+//
+
+/*
+Recursively evaluate
+each dependency rule.
+*/
+void update_dependencies(Rule *rule)
+{
+    if (dep != NULL) {
+        if (dep_newer_than_target(dep)
     }
+    
+    
+    
 }
 
 
 // ====  end helpers ====
 
 
-void run_make(char *target, Rule *rules, int pflag) {
-    // TODO
-    if (target == NULL || dep_newer_than_target(target, rules)) {
-        execute_all_actions(rules);
+void run_make(char *target, Rule *rules, int pflag)
+{
+    if (target == NULL) {
+        update_dependencies(rules->dependencies);
     } else {
-        Rule *rule = get_target_rule(target, rules);
+        
+        update_dependencies(rules->dependencies);
     }
+
 }
 
