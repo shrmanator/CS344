@@ -25,11 +25,11 @@ void print_actions(Action *act) {
         }
         printf("\n");
         act = act->next_act;
-    }    
+    }
 }
 
 /* Print the list of rules to stdout in makefile format. If the output
-   of print_rules is saved to a file, it should be possible to use it to 
+   of print_rules is saved to a file, it should be possible to use it to
    run make correctly.
  */
 void print_rules(Rule *rules){
@@ -159,8 +159,8 @@ Dependency *parse_dependencies(char *line, Rule *rules) {
      - If a line starts with a tab it is an action line for the current rule
      - If a line starts with a word character it is a target line, and we will
        create a new rule
-     - If a line starts with a '#' or '\n' it is a comment or a blank line 
-       and should be ignored. 
+     - If a line starts with a '#' or '\n' it is a comment or a blank line
+       and should be ignored.
      - If a line only has space characters ('', '\t', '\n') in it, it should be
        ignored.
  */
@@ -212,6 +212,5 @@ Rule *parse_file(FILE *fp) {
 
 int main() {
     FILE *file = fopen("Makefile2" ,"r");
-    
     print_rules(parse_file(file));
 }
