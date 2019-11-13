@@ -58,6 +58,9 @@ void print_rules(Rule *rules){
     }
 }
 
+//Returns Rule of the corresponding target:
+Rule *get_rule(char *target, Rule *rules);
+
 //Returns input line's target (if one exists):
 char *parse_target(char *line) {
     char *target = malloc(500);
