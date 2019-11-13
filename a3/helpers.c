@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "pmake.h"
+
 #define MAX_ARGS 32
 #define MAX_NAME 128
 
