@@ -80,7 +80,7 @@ char *parse_target(char *line) {
 Action *parse_action(char *lines) {
     int max_array_size = 256;
     lines = lines + 1;
-    
+
     char *curr1;
     // create action:
     Action *action = malloc(sizeof(Action));
@@ -95,34 +95,44 @@ Action *parse_action(char *lines) {
     return action;
 }
 
-// populate each rule in rules with their dependencies:
-// the function:
-// 1. creates a linked-list of Dependencies
-// 2. returns that linked-list
+// Returns a Dependency containing all dependencies in line.
 Dependency *parse_dependencies(char *line, Rule *rules) {
     char *dep_target;
-    printf("line is %s\n", line);
+//    printf("line is '%s'\n", line);
     
     int coln_index;
     for (coln_index = 0; line[coln_index] != ':' && line[coln_index] != '\0'; coln_index++) {}
-
     line += coln_index + 2; // + 2 counts for whitespace.
-    Dependency *first = NULL, *previous = NULL;
+    
+    Dependency *first = NULL, *prev = NULL;
     
     while ((dep_target = strsep(&line, " ")) != NULL) {
         Dependency *new_dep = malloc(sizeof(Dependency));
         new_dep->rule = get_rule(dep_target, rules);
-        printf("got rule %p from target %s", new_dep->rule, dep_target);
-        
         new_dep->next_dep = NULL;
         if (first == NULL) {
             first = new_dep;
         } else {
-            previous->next_dep = new_dep;
+            prev->next_dep = new_dep;
         }
-        previous = new_dep;
+        prev = new_dep;
     }
     return first;
+}
+
+/*
+ Removes 'whitespace' from end of string.
+*/
+void strip_r(char* string) {
+    int len = strlen(string);
+    for (int i = len - 1; i >= 0; i--) {
+        if (string[i] == ' ' || string[i] ==  '\t' || string[i] == '\n') {
+            string[i] = '\0';
+        }
+        else {
+            return;
+        }
+    }
 }
 
 
@@ -143,24 +153,35 @@ Rule *parse_file(FILE *fp) {
         exit(1);
     }
     char line[256];
-    Rule *first = NULL, *prev = NULL, *new_rule = NULL;
     
+    Action *last_action = NULL;
+    Rule *first = NULL, *prev = NULL, *new_rule = NULL;
     while (fgets(line, sizeof(line), fp)) {
+        strip_r(line);
         if (is_comment_or_empty(line)) {
             continue;
         }
         if (line[0] == '\t') {
             // line is a single action:
-            prev->actions = parse_action(line);
+            if (last_action == NULL) {
+                prev->actions = parse_action(line);
+                last_action = prev->actions;
+            }
+            else {
+                last_action->next_act = parse_action(line);
+                last_action = last_action->next_act;
+            }
         } else {
             new_rule = malloc(sizeof(Rule));
             new_rule->next_rule = NULL;
             new_rule->actions = NULL;
             new_rule->target = parse_target(line);
+            last_action = NULL;
+            // now append new_rule to end of list:
             if (first == NULL) {
-                    first = new_rule;
-            } else if (prev != NULL) {
-                    prev->next_rule = new_rule;
+                first = new_rule;
+            } else {
+                prev->next_rule = new_rule;
             }
             prev = new_rule;
         }
@@ -168,11 +189,12 @@ Rule *parse_file(FILE *fp) {
     Rule *curr = first;
     fseek(fp, 0, SEEK_SET);
     while (fgets(line, sizeof(line), fp)) {
+        strip_r(line);
         if (is_comment_or_empty(line)) {
             continue;
         }
         if (line[0] == '\t') {
-            // line is a single action:
+            // line is an action:
             continue;
         }
         curr->dependencies = parse_dependencies(line, first);
