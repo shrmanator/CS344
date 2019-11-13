@@ -46,10 +46,6 @@ int dep_newer_than_target(char *target, Rule *deps) {
     return 0;
 }
 
-execute_all_actions(Rule *rules) {
-    
-    }
-}
 
 
 
@@ -57,20 +53,15 @@ execute_all_actions(Rule *rules) {
 
 
 
-//
+
 
 /*
 Recursively evaluate
 each dependency rule.
 */
-void update_dependencies(Rule *rule)
-{
-    if (dep != NULL) {
-        if (dep_newer_than_target(dep)
-    }
-    
-    
-    
+int update_dependencies(Rule *dep) {
+    if (dep != NULL)
+        update_dependencies(dep->next_dep);
 }
 
 
@@ -82,9 +73,7 @@ void run_make(char *target, Rule *rules, int pflag)
     if (target == NULL) {
         update_dependencies(rules->dependencies);
     } else {
-        
-        update_dependencies(rules->dependencies);
+        Rule *rule = get_rule(target, rules);
+        update_dependencies(rule->dependencies);
     }
-
 }
-
