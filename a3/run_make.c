@@ -10,13 +10,36 @@
 #include "pmake.h"
 
 /*
- Returns creation time of rule in millisecs.
+ Returns last time rule was modified.
  */
-//char *get_last_modified_time(char *rule) {
-//    struct stat attr;
-//    stat(path, &attr);
-//    return ctime(&attr.st_mtime));
-//}
+struct timespec last_modified_time(char *path) {
+    struct stat attr;
+    if (stat(path, &attr) == 0) {
+        return attr.st_mtime;
+    }
+    struct timespec ti;
+    return ti;
+}
+
+/*
+ Returns 1 if t2 is modified more recently,
+ 0 otherwise.
+*/
+int compare_times(time_t t1, time_t t2) {
+    if (t1.tv_secs > t2.tv_secs) {
+        // t1 older than t2
+        return 1;
+    }
+    if (t1.tv_secs < t2.tv_secs) {
+        return 0;
+    }
+    if (t1.tv_nsecs > t2.tv_nsecs) {
+        // t1 older than t2 in nano
+        return 1;
+    }
+    return 0;
+}
+    
 //
 //Rule *get_rule(char *target, Rule *rules) {
 //    Rule *curr = rules;
@@ -48,21 +71,45 @@
 //
 //
 
-
-
-
-
-
-
+/*
+Execute given action
+*/
+void execute_action(Action *act) {
+    pid_t pid = fork();
+    if (pid < 0) {
+        perror("fork");
+        kill(get_ppid(), STDIN)
+        exit(1);
+    }
+    if (pid == 0) {
+        execvp(act->actions[0], act->actions);
+    }
+    if (pid > 0) {
+        wait(get_ppid());
+    }
+}
 
 /*
 Recursively evaluate
 each dependency rule.
 */
-int update_dependencies(Rule *dep) {
-    if (dep != NULL)
-        update_dependencies(dep->next_dep);
-    return 0;
+void evaluate_rule(Rule *rule, struct timespec parent_time) {
+    struct timespec last_mtime = last_modified_on(rule);
+    
+    if (compare_times(parent_time, last_mtime)) {
+        return; // no rebuild
+    }
+    Dependency *dep = rule->dependencies;
+    while (dep != NULL) {
+        evaluate_rule(dep->rule, last_mtime);
+        dep = dep->next_dep;
+    }
+    
+    Action *act = rule->actions;
+    while (act != NULL) {
+        execute_action(act);
+        act = act->next_act;
+    }
 }
 
 
@@ -71,10 +118,9 @@ int update_dependencies(Rule *dep) {
 
 void run_make(char *target, Rule *rules, int pflag)
 {
-    if (target == NULL) {
-        update_dependencies(rules->dependencies);
-    } else {
-        Rule *rule = get_rule(target, rules);
-        update_dependencies(rule->dependencies);
+    Rule *rule = rules;
+    if (target != NULL) {
+        rule = get_rule(target, rules);
     }
+    evaluate_rule(rule, last_modified_time(rule)); // evaluates first rule
 }

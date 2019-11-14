@@ -73,7 +73,7 @@ Rule *get_rule(char *target, Rule *rules) {
         curr = curr->next_rule;
     }
     Rule *new_rule = malloc(sizeof(Rule));
-    new_rule->target = target;
+    new_rule->target = strdup(target);
     new_rule->dependencies = NULL;
     new_rule->actions = NULL;
     curr->next_rule = new_rule;
