@@ -12,7 +12,7 @@
 /*
  Returns last time rule was modified.
  */
-struct timespec last_modified_time(char *path) {
+struct timespec last_modified_time(Rule *path) {
     struct stat attr;
     if (stat(path, &attr) == 0) {
         return attr.st_mtime;
@@ -67,7 +67,7 @@ Recursively evaluate
 each dependency rule.
 */
 void evaluate_rule(Rule *rule, struct timespec parent_time) {
-    struct timespec last_mtime = last_modified_on(rule);
+    struct timespec last_mtime = last_modified_time(rule);
     
     if (compare_times(parent_time, last_mtime)) {
         return; // no rebuild
@@ -95,5 +95,5 @@ void run_make(char *target, Rule *rules, int pflag)
     if (target != NULL) {
         rule = get_rule(target, rules);
     }
-    evaluate_rule(rule, last_modified_time(rule)); // evaluates first rule
+    evaluate_rule(rule, last_modified_time(rule));
 }
