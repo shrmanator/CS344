@@ -6,8 +6,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
-#include <time.h>
 #include "pmake.h"
+#include "helpers.c"
 
 /*
  Returns last time rule was modified.
