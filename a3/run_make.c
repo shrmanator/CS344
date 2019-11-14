@@ -39,56 +39,28 @@ int compare_times(time_t t1, time_t t2) {
     }
     return 0;
 }
-    
-//
-//Rule *get_rule(char *target, Rule *rules) {
-//    Rule *curr = rules;
-//    while (curr !=NULL) {
-//        if (strcmp(curr->target, target) == 0) {
-//            return curr;
-//        }
-//        curr = curr->next_rule;
-//    }
-//    return NULL;
-//}
-//
-///* Returns 1 if dep newer
-//*/ than target, 0 otherwise.
-//int dep_newer_than_target(char *target, Rule *deps) {
-//    char *dep_date; // last time dependency was modified
-//    char *target_date = get_last_modified_time(get_rule(target));
-//
-//    Rule *curr;
-//    while (curr != NULL) {
-//        dep_date = get_last_modified_time(get_rule(curr));
-//        if (difftime(target_mod_date, dep_mod_date) < 0) {
-//            return 1;
-//        }
-//        curr = curr->next_rule;
-//    }
-//    return 0;
-//}
-//
-//
 
 /*
-Execute given action
+Execute given action.
 */
 void execute_action(Action *act) {
+    pid_t ppid = get_ppid();
     pid_t pid = fork();
+    
     if (pid < 0) {
         perror("fork");
-        kill(get_ppid(), STDIN)
         exit(1);
     }
     if (pid == 0) {
         execvp(act->actions[0], act->actions);
     }
     if (pid > 0) {
-        wait(get_ppid());
+        int exitstatus;
+        if (waitpid(ppid, &exitstatus, 0) == -1 ) {
+            exit(EXIT_FAILURE);
+        }
     }
 }
-
 
 /*
 Recursively evaluate
