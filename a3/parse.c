@@ -203,8 +203,3 @@ Rule *parse_file(FILE *fp) {
     fclose(fp);
     return first;
 }
-
-int main() {
-    FILE *file = fopen("Makefile2" ,"r");
-    print_rules(parse_file(file));
-}
