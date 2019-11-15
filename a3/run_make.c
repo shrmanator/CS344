@@ -6,13 +6,13 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
-#include "pmake.h"
+#include <time.h>
 #include "helpers.c"
 
 /*
  Returns last time rule was modified.
  */
-struct timespec last_modified_time(Rule *path) {
+struct timespec last_modified_time(char *path) {
     struct stat attr;
     if (stat(path, &attr) == 0) {
         return attr.st_mtime;
@@ -25,15 +25,15 @@ struct timespec last_modified_time(Rule *path) {
  Returns 1 if t2 is modified more recently,
  0 otherwise.
 */
-int compare_times(time_t t1, time_t t2) {
-    if (t1.tv_secs > t2.tv_secs) {
+int compare_times(struct timespec t1, struct timespec t2) {
+    if (t1.tv_sec > t2.tv_sec) {
         // t1 older than t2
         return 1;
     }
-    if (t1.tv_secs < t2.tv_secs) {
+    if (t1.tv_sec < t2.tv_sec) {
         return 0;
     }
-    if (t1.tv_nsecs > t2.tv_nsecs) {
+    if (t1.tv_nsec > t2.tv_nsec) {
         // t1 older than t2 in nano
         return 1;
     }
@@ -44,7 +44,7 @@ int compare_times(time_t t1, time_t t2) {
 Execute given action.
 */
 void execute_action(Action *act) {
-    pid_t ppid = get_ppid();
+    pid_t ppid = getppid();
     pid_t pid = fork();
     
     if (pid < 0) {
@@ -52,7 +52,7 @@ void execute_action(Action *act) {
         exit(1);
     }
     if (pid == 0) {
-        execvp(act->actions[0], act->actions);
+        execvp(act->args[0], act->args);
     }
     if (pid > 0) {
         int exitstatus;
@@ -67,7 +67,7 @@ Recursively evaluate
 each dependency rule.
 */
 void evaluate_rule(Rule *rule, struct timespec parent_time) {
-    struct timespec last_mtime = last_modified_time(rule);
+    struct timespec last_mtime = last_modified_time(rule->actions->args[0]);
     
     if (compare_times(parent_time, last_mtime)) {
         return; // no rebuild
@@ -95,5 +95,5 @@ void run_make(char *target, Rule *rules, int pflag)
     if (target != NULL) {
         rule = get_rule(target, rules);
     }
-    evaluate_rule(rule, last_modified_time(rule));
+    evaluate_rule(rule, last_modified_time(rule->actions->args[0]));
 }
