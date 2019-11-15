@@ -18,8 +18,8 @@ long num_reads, seconds;
 /*
  It's a handler.
  */
-void handler(int code) {
-    fprintf(stderr, "it ded");
+void handler() {
+    fprintf(stdout, MESSAGE, num_reads, seconds);
     exit(0);
 }
 
@@ -39,22 +39,29 @@ int main(int argc, char **argv) {
       perror("fopen");
       exit(1);
     }
-    
+
     struct sigaction siggy;
     siggy.sa_handler = handler;
     siggy.sa_flags = 0;             // default flags
     sigemptyset(&siggy.sa_mask);   // don't block signals during handler
     sigaction(SIGPROF, &siggy, NULL);
     
+    struct itimerval tminus;
+    tminus.it_interval.tv_sec = 0;
+    tminus.it_value.tv_sec = seconds;
+    setitimer(ITIMER_PROF, &tminus, NULL);
+    
     /* In an infinite loop, read an int from a random location in the file,
      * and print it to stderr.
      */
+
     for (;;) {
         int j, value;
         j = random() % 100;
         fseek(fp, j * sizeof(int), SEEK_SET);
         value = read(fileno(fp), &value, 1);
         fprintf(stderr, "%d", value);
+        num_reads++;
     }
     
     
