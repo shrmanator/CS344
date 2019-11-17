@@ -28,6 +28,7 @@ void print_actions(Action *act) {
     }
 }
 
+
 /* Print the list of rules to stdout in makefile format. If the output
    of print_rules is saved to a file, it should be possible to use it to
    run make correctly.
