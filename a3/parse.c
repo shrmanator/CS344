@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 
 #include "pmake.h"
+#include "helpers.h"
 
 /* Print the list of actions */
 void print_actions(Action *act) {

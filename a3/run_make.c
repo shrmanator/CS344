@@ -7,18 +7,17 @@
 #include <sys/stat.h>
 
 #include <time.h>
-#include "helpers.c"
+#include "helpers.h"
 
 /*
  Returns last time rule was modified.
  */
-struct timespec last_modified_time(char *path) {
+time_t last_modified_time(char *path) {
     struct stat attr;
     if (stat(path, &attr) == 0) {
         return attr.st_mtime;
     }
-    struct timespec ti;
-    return ti;
+    return 0;
 }
 
 /*
@@ -66,23 +65,33 @@ void execute_action(Action *act) {
 Recursively evaluate
 each dependency rule.
 */
-void evaluate_rule(Rule *rule, struct timespec parent_time) {
-    struct timespec last_mtime = last_modified_time(rule->actions->args[0]);
-    
-    if (compare_times(parent_time, last_mtime)) {
-        return; // no rebuild
-    }
+void evaluate_rule(Rule *rule) {
+    time_t last_mtime = last_modified_time(rule->actions->args[0]);
     Dependency *dep = rule->dependencies;
+    int rerun_actions = 0;
     while (dep != NULL) {
-        evaluate_rule(dep->rule, last_mtime);
+        pid_t pid = fork();
+        
+        evaluate_rule(dep->rule);
+        time_t dep_mtime = last_modified_time(dep->rule->target);
+        
+        if (last_mtime == 0 || dep_mtime > last_mtime) {
+            rerun_actions = 1;
+        }
         dep = dep->next_dep;
     }
-    
-    Action *act = rule->actions;
-    while (act != NULL) {
-        execute_action(act);
-        act = act->next_act;
+    for (int i = 0; i < 10; i++) {
+        int status;
+        wait(&status);
     }
+    if (rerun_actions) {
+        Action *act = rule->actions;
+        while (act != NULL) {
+            execute_action(act);
+            act = act->next_act;
+        }
+    }
+    
 }
 
 
@@ -96,5 +105,5 @@ void run_make(char *target, Rule *rules, int pflag)
     if (target != NULL) {
         rule = get_rule(target, rules);
     }
-    evaluate_rule(rule, last_modified_time(rule->actions->args[0]));
+    evaluate_rule(rule);
 }
