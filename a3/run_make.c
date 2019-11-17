@@ -70,8 +70,6 @@ void evaluate_rule(Rule *rule) {
     Dependency *dep = rule->dependencies;
     int rerun_actions = 0;
     while (dep != NULL) {
-        pid_t pid = fork();
-        
         evaluate_rule(dep->rule);
         time_t dep_mtime = last_modified_time(dep->rule->target);
         
@@ -80,10 +78,6 @@ void evaluate_rule(Rule *rule) {
         }
         dep = dep->next_dep;
     }
-    for (int i = 0; i < 10; i++) {
-        int status;
-        wait(&status);
-    }
     if (rerun_actions) {
         Action *act = rule->actions;
         while (act != NULL) {
@@ -91,7 +85,6 @@ void evaluate_rule(Rule *rule) {
             act = act->next_act;
         }
     }
-    
 }
 
 
