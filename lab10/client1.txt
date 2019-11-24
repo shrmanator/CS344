@@ -1,0 +1,7 @@
+Script started on 2019-11-22 13:53:27-0500
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ randclient 17[K[K[K[K[K[K[K[K[K[K[K[K[K.[K./randclient 127.0.0.1
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ ./randclient 127.0.0.1
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ ./randclient 127.0.0.1
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ make
+make: Nothing to be done for 'all'.
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ exit
