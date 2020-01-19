@@ -1,0 +1,192 @@
+Script started on 2019-11-23 20:37:20-0500
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ gdb bef[K[Kufserver
+GNU gdb (Ubuntu 8.1-0ubuntu3.2) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from bufserver...done.
+(gdb) b main
+Breakpoint 1 at 0xd32: file bufserver.c, line 18.
+(gdb) watch buf
+No symbol "buf" in current context.
+(gdb) watch inbuf
+No symbol "inbuf" in current context.
+(gdb) n
+The program is not being run.
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/bufserver 
+
+Breakpoint 1, main () at bufserver.c:18
+18      int main() {
+(gdb) watch buf
+Hardware watchpoint 2: buf
+(gdb) watch inbuf
+No symbol "inbuf" in current context.
+(gdb) n
+21          setbuf(stdout, NULL);
+(gdb) 
+23          struct sockaddr_in *self = init_server_addr(PORT);
+(gdb) n
+24          int listenfd = set_up_server_socket(self, 5);
+(gdb) 
+bind: Address already in use
+[Inferior 1 (process 15937) exited with code 01]
+(gdb) 
+The program is not being run.
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/bufserver 
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+
+Breakpoint 1, main () at bufserver.c:18
+18      int main() {
+(gdb) s
+21          setbuf(stdout, NULL);
+(gdb) 
+setbuf (fp=0x7ffff7dd0760 <_IO_2_1_stdout_>, buf=0x0) at setbuf.c:33
+33      setbuf.c: No such file or directory.
+(gdb) 
+__GI__IO_setbuffer (fp=0x7ffff7dd0760 <_IO_2_1_stdout_>, buf=0x0, size=8192)
+    at iosetbuffer.c:31
+31      iosetbuffer.c: No such file or directory.
+(gdb) 
+33      in iosetbuffer.c
+(gdb) 
+37      in iosetbuffer.c
+(gdb) 
+34      in iosetbuffer.c
+(gdb) 
+36      in iosetbuffer.c
+(gdb) n
+34      in iosetbuffer.c
+(gdb) 
+37      in iosetbuffer.c
+(gdb) 
+36      in iosetbuffer.c
+(gdb) 
+37      in iosetbuffer.c
+(gdb) 
+38      in iosetbuffer.c
+(gdb) 
+40      in iosetbuffer.c
+(gdb) 
+33      in iosetbuffer.c
+(gdb) 
+42      in iosetbuffer.c
+(gdb) 
+main () at bufserver.c:23
+23          struct sockaddr_in *self = init_server_addr(PORT);
+(gdb) 
+24          int listenfd = set_up_server_socket(self, 5);
+(gdb) 
+bind: Address already in use
+[Inferior 1 (process 15952) exited with code 01]
+(gdb) n
+The program is not being run.
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/bufserver 
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+
+Breakpoint 1, main () at bufserver.c:18
+18      int main() {
+(gdb) n[Kr[Kn
+21          setbuf(stdout, NULL);
+(gdb) 
+23          struct sockaddr_in *self = init_server_addr(PORT);
+(gdb) 
+24          int listenfd = set_up_server_socket(self, 5);
+(gdb) 
+bind: Address already in use
+[Inferior 1 (process 15965) exited with code 01]
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/bufserver 
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+
+Breakpoint 1, main () at bufserver.c:18
+18      int main() {
+(gdb) 
+(gdb) s
+21          setbuf(stdout, NULL);
+(gdb) 
+setbuf (fp=0x7ffff7dd0760 <_IO_2_1_stdout_>, buf=0x0) at setbuf.c:33
+33      setbuf.c: No such file or directory.
+(gdb) 
+__GI__IO_setbuffer (fp=0x7ffff7dd0760 <_IO_2_1_stdout_>, buf=0x0, size=8192)
+    at iosetbuffer.c:31
+31      iosetbuffer.c: No such file or directory.
+(gdb) 
+33      in iosetbuffer.c
+(gdb) 
+37      in iosetbuffer.c
+(gdb) 
+34      in iosetbuffer.c
+(gdb) 
+36      in iosetbuffer.c
+(gdb) 
+34      in iosetbuffer.c
+(gdb) 
+37      in iosetbuffer.c
+(gdb) 
+IO_validate_vtable (vtable=<optimized out>) at libioP.h:870
+870     libioP.h: No such file or directory.
+(gdb) s
+__GI__IO_setbuffer (fp=0x7ffff7dd0760 <_IO_2_1_stdout_>, buf=0x0, size=8192)
+    at iosetbuffer.c:36
+36      iosetbuffer.c: No such file or directory.
+(gdb) 
+37      in iosetbuffer.c
+(gdb) 
+IO_validate_vtable (vtable=0x7ffff7dcc2a0 <_IO_file_jumps>) at libioP.h:870
+870     libioP.h: No such file or directory.
+(gdb) 
+872     in libioP.h
+(gdb) 
+870     in libioP.h
+(gdb) 
+872     in libioP.h
+(gdb) 
+873     in libioP.h
+(gdb) 
+__GI__IO_setbuffer (fp=0x7ffff7dd0760 <_IO_2_1_stdout_>, buf=0x0, size=0)
+    at iosetbuffer.c:37
+37      iosetbuffer.c: No such file or directory.
+(gdb) n
+38      in iosetbuffer.c
+(gdb) 
+40      in iosetbuffer.c
+(gdb) 
+33      in iosetbuffer.c
+(gdb) 
+42      in iosetbuffer.c
+(gdb) 
+main () at bufserver.c:23
+23          struct sockaddr_in *self = init_server_addr(PORT);
+(gdb) 
+24          int listenfd = set_up_server_socket(self, 5);
+(gdb) 
+bind: Address already in use
+[Inferior 1 (process 15978) exited with code 01]
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) q
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ exit
+exit
+
+Script done on 2019-11-23 20:43:02-0500

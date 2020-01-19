@@ -13,16 +13,17 @@ int main(int argc, char **argv) {
     }
 
     FILE *fp;
-    if ((fp = fopen(argv[1], "w")) == NULL) {
+    if ((fp = fopen(argv[1], "wb")) == NULL) {
         perror("fopen");
         exit(1);
     }
 
     // TODO: complete this program according its description above.
-
-
-
-
+    int i, j;
+    for (i = 0; i < 100; i++) {
+        j = random() % 100;
+        fwrite(&i, 1, sizeof(int), fp);
+    }
 
     fclose(fp);
     return 0;

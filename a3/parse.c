@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 
 #include "pmake.h"
+#include "helpers.h"
 
 /* Print the list of actions */
 void print_actions(Action *act) {
@@ -27,6 +28,7 @@ void print_actions(Action *act) {
         act = act->next_act;
     }
 }
+
 
 /* Print the list of rules to stdout in makefile format. If the output
    of print_rules is saved to a file, it should be possible to use it to

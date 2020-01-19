@@ -1,0 +1,295 @@
+Script started on 2019-11-23 20:14:09-0500
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ gdb fub[K[K[Kbufserver
+GNU gdb (Ubuntu 8.1-0ubuntu3.2) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from bufserver...done.
+(gdb) b ser[Kt_up_server_socket 
+Breakpoint 1 at 0xf50: file socket.c, line 35.
+(gdb) n
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/bufserver 
+
+Breakpoint 1, set_up_server_socket (self=0x555555757260, num_queue=5)
+    at socket.c:35
+35      int set_up_server_socket(struct sockaddr_in *self, int num_queue) {
+(gdb) n
+36          int soc = socket(PF_INET, SOCK_STREAM, 0);
+(gdb) 
+37          if (soc < 0) {
+(gdb) 
+44          int on = 1;
+(gdb) 
+45          int status = setsockopt(soc, SOL_SOCKET, SO_REUSEADDR,
+(gdb) 
+47          if (status < 0) {
+(gdb) 
+53          if (bind(soc, (struct sockaddr *)self, sizeof(*self)) < 0) {
+(gdb) 
+55              perror("bind");
+(gdb) 
+bind: Address already in use
+56              exit(1);
+(gdb) 
+[Inferior 1 (process 13432) exited with code 01]
+(gdb) s
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/bufserver 
+
+Breakpoint 1, set_up_server_socket (self=0x555555757260, num_queue=5)
+    at socket.c:35
+35      int set_up_server_socket(struct sockaddr_in *self, int num_queue) {
+(gdb) n[Ks
+36          int soc = socket(PF_INET, SOCK_STREAM, 0);
+(gdb) 
+socket () at ../sysdeps/unix/syscall-template.S:78
+78      ../sysdeps/unix/syscall-template.S: No such file or directory.
+(gdb) 
+socket () at ../sysdeps/unix/syscall-template.S:79
+79      in ../sysdeps/unix/syscall-template.S
+(gdb) 
+set_up_server_socket (self=0x555555757260, num_queue=5) at socket.c:37
+37          if (soc < 0) {
+(gdb) 
+44          int on = 1;
+(gdb) 
+45          int status = setsockopt(soc, SOL_SOCKET, SO_REUSEADDR,
+(gdb) 
+setsockopt () at ../sysdeps/unix/syscall-template.S:78
+78      ../sysdeps/unix/syscall-template.S: No such file or directory.
+(gdb) 
+setsockopt () at ../sysdeps/unix/syscall-template.S:79
+79      in ../sysdeps/unix/syscall-template.S
+(gdb) 
+set_up_server_socket (self=0x555555757260, num_queue=5) at socket.c:47
+47          if (status < 0) {
+(gdb) 
+53          if (bind(soc, (struct sockaddr *)self, sizeof(*self)) < 0) {
+(gdb) 
+bind () at ../sysdeps/unix/syscall-template.S:78
+78      ../sysdeps/unix/syscall-template.S: No such file or directory.
+(gdb) 
+80      in ../sysdeps/unix/syscall-template.S
+(gdb) 
+set_up_server_socket (self=0x555555757260, num_queue=5) at socket.c:55
+55              perror("bind");
+(gdb) 
+__GI_perror (s=0x5555555552ea "bind") at perror.c:48
+48      perror.c: No such file or directory.
+(gdb) 
+58      in perror.c
+(gdb) 
+49      in perror.c
+(gdb) 
+58      in perror.c
+(gdb) 
+49      in perror.c
+(gdb) 
+58      in perror.c
+(gdb) n
+59      in perror.c
+(gdb) 
+60      in perror.c
+(gdb) 
+61      in perror.c
+(gdb) 
+74      in perror.c
+(gdb) 
+bind: Address already in use
+76      in perror.c
+(gdb) 
+82      in perror.c
+(gdb) s
+80      in perror.c
+(gdb) 
+82      in perror.c
+(gdb) 
+80      in perror.c
+(gdb) 
+_IO_new_fclose (fp=0x555555757280) at iofclose.c:34
+34      iofclose.c: No such file or directory.
+(gdb) 
+48      in iofclose.c
+(gdb) 
+34      in iofclose.c
+(gdb) 
+48      in iofclose.c
+(gdb) 
+49      in iofclose.c
+(gdb) 
+__GI__IO_un_link (fp=0x555555757280) at genops.c:53
+53      genops.c: No such file or directory.
+(gdb) 
+54      in genops.c
+(gdb) 
+58      in genops.c
+(gdb) 
+59      in genops.c
+(gdb) 
+61      in genops.c
+(gdb) 
+59      in genops.c
+(gdb) 
+60      in genops.c
+(gdb) 
+61      in genops.c
+(gdb) 
+59      in genops.c
+(gdb) 
+61      in genops.c
+(gdb) 
+59      in genops.c
+(gdb) n
+61      in genops.c
+(gdb) 
+63      in genops.c
+(gdb) 
+61      in genops.c
+(gdb) 
+63      in genops.c
+(gdb) 
+65      in genops.c
+(gdb) 
+66      in genops.c
+(gdb) 
+74      in genops.c
+(gdb) 
+76      in genops.c
+(gdb) 
+74      in genops.c
+(gdb) 
+76      in genops.c
+(gdb) 
+78      in genops.c
+(gdb) s
+77      in genops.c
+(gdb) 
+78      in genops.c
+(gdb) 
+79      in genops.c
+(gdb) 
+82      in genops.c
+(gdb) 
+_IO_new_fclose (fp=0x555555757280) at iofclose.c:51
+51      iofclose.c: No such file or directory.
+(gdb) 
+52      in iofclose.c
+(gdb) 
+53      in iofclose.c
+(gdb) 
+_IO_new_file_close_it (fp=fp@entry=0x555555757280) at fileops.c:129
+129     fileops.c: No such file or directory.
+(gdb) 
+131     in fileops.c
+(gdb) 
+135     in fileops.c
+(gdb) 
+138     in fileops.c
+(gdb) 
+135     in fileops.c
+(gdb) 
+134     in fileops.c
+(gdb) 
+136     in fileops.c
+(gdb) 
+_IO_new_do_write (fp=fp@entry=0x555555757280, 
+    data=0x5555557574b0 "bind: Address already in use\n", to_do=0)
+    at fileops.c:433
+433     in fileops.c
+(gdb) n
+434     in fileops.c
+(gdb) 
+_IO_new_file_close_it (fp=fp@entry=0x555555757280) at fileops.c:140
+140     in fileops.c
+(gdb) 
+143     in fileops.c
+(gdb) 
+140     in fileops.c
+(gdb) 
+143     in fileops.c
+(gdb) 
+146     in fileops.c
+(gdb) 
+154     in fileops.c
+(gdb) 
+155     in fileops.c
+(gdb) 
+158     in fileops.c
+(gdb) s
+155     in fileops.c
+(gdb) 
+156     in fileops.c
+(gdb) 
+158     in fileops.c
+(gdb) 
+__GI__IO_un_link (fp=fp@entry=0x555555757280) at genops.c:53
+53      genops.c: No such file or directory.
+(gdb) 
+54      in genops.c
+(gdb) 
+82      in genops.c
+(gdb) 
+_IO_new_file_close_it (fp=fp@entry=0x555555757280) at fileops.c:163
+163     fileops.c: No such file or directory.
+(gdb) 
+159     in fileops.c
+(gdb) 
+160     in fileops.c
+(gdb) n
+161     in fileops.c
+(gdb) 
+163     in fileops.c
+(gdb) 
+164     in fileops.c
+(gdb) 
+_IO_new_fclose (fp=0x555555757280) at iofclose.c:51
+51      iofclose.c: No such file or directory.
+(gdb) 
+57      in iofclose.c
+(gdb) 
+58      in iofclose.c
+(gdb) 
+71      in iofclose.c
+(gdb) 
+74      in iofclose.c
+(gdb) 
+77      in iofclose.c
+(gdb) 
+81      in iofclose.c
+(gdb) 
+set_up_server_socket (self=0x555555757260, num_queue=5) at socket.c:56
+56              exit(1);
+(gdb) 
+[Inferior 1 (process 13793) exited with code 01]
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) q
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ ls
+bufserver    client1.txt  randclient.c  readserver.c  socket.c
+bufserver.c  Makefile     randclient.o  readserver.o  socket.h
+bufserver.o  randclient   readserver    server1.txt   socket.o
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ vim server1.[K[K[K[K[K[K[K[K[K[K[K[Kexite[K
+exit
+
+Script done on 2019-11-23 20:23:48-0500

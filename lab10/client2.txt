@@ -1,0 +1,193 @@
+Script started on 2019-11-23 20:37:30-0500
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ gdb u[Kbufserver[K[K[K[K[K[K[K[K[Krandb[Kclient
+GNU gdb (Ubuntu 8.1-0ubuntu3.2) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from randclient...done.
+(gdb) b main
+Breakpoint 1 at 0xc69: file randclient.c, line 24.
+(gdb) run 127.0.01[K0[K.1
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/randclient 127.0.0.1
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffea88) at randclient.c:24
+24          if (argc != 2) {
+(gdb) n[Kwac[Ktch buf
+Hardware watchpoint 2: buf
+(gdb) watch inbuf
+No symbol "inbuf" in current context.
+(gdb) n
+29          int soc = connect_to_server(PORT, argv[1]);
+(gdb) 
+31          write_random_pieces(soc, MESSAGE, TIMES);
+(gdb) 
+33          close(soc);
+(gdb) 
+34          return 0;
+(gdb) 
+35      }
+(gdb) 
+__libc_start_main (main=0x555555554c5a <main>, argc=2, argv=0x7fffffffea88, 
+    init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, 
+    stack_end=0x7fffffffea78) at ../csu/libc-start.c:344
+344     ../csu/libc-start.c: No such file or directory.
+(gdb) 
+[Inferior 1 (process 15908) exited normally]
+(gdb) 
+The program is not being run.
+(gdb) 
+The program is not being run.
+(gdb) s
+The program is not being run.
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/randclient 127.0.0.1
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffea88) at randclient.c:24
+24          if (argc != 2) {
+(gdb) s
+29          int soc = connect_to_server(PORT, argv[1]);
+(gdb) s
+connect_to_server (port=30001, hostname=0x7fffffffed0e "127.0.0.1")
+    at socket.c:100
+100     int connect_to_server(int port, const char *hostname) {
+(gdb) 
+101         int soc = socket(PF_INET, SOCK_STREAM, 0);
+(gdb) 
+socket () at ../sysdeps/unix/syscall-template.S:78
+78      ../sysdeps/unix/syscall-template.S: No such file or directory.
+(gdb) 
+socket () at ../sysdeps/unix/syscall-template.S:79
+79      in ../sysdeps/unix/syscall-template.S
+(gdb) 
+connect_to_server (port=30001, hostname=0x7fffffffed0e "127.0.0.1")
+    at socket.c:102
+102         if (soc < 0) {
+(gdb) 
+109         addr.sin_family = PF_INET;
+(gdb) 
+111         addr.sin_port = htons(port);
+(gdb) 
+htons (x=30001) at htons.c:29
+29      htons.c: No such file or directory.
+(gdb) 
+33      in htons.c
+(gdb) 
+connect_to_server (port=30001, hostname=0x7fffffffed0e "127.0.0.1")
+    at socket.c:113
+113         memset(&(addr.sin_zero), 0, 8);
+(gdb) 
+__memset_sse2_unaligned ()
+    at ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S:109
+109     ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S: No such file or directory.
+(gdb) 
+111     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) 
+112     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) n
+__memset_sse2_unaligned_erms ()
+    at ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S:222
+222     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) 
+223     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) 
+224     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) 
+252     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) 
+253     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) 
+__memset_sse2_unaligned_erms ()
+    at ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S:255
+255     in ../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+(gdb) 
+connect_to_server (port=30001, hostname=0x7fffffffed0e "127.0.0.1")
+    at socket.c:116
+116         struct hostent *hp = gethostbyname(hostname);
+(gdb) 
+117         if (hp == NULL) {
+(gdb) 
+122         addr.sin_addr = *((struct in_addr *) hp->h_addr);
+(gdb) 
+125         if (connect(soc, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
+(gdb) 
+130         return soc;
+(gdb) 
+131     }
+(gdb) 
+main (argc=2, argv=0x7fffffffea88) at randclient.c:31
+31          write_random_pieces(soc, MESSAGE, TIMES);
+(gdb) 
+33          close(soc);
+(gdb) 
+34          return 0;
+(gdb) 
+35      }
+(gdb) 
+__libc_start_main (main=0x555555554c5a <main>, argc=2, argv=0x7fffffffea88, 
+    init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, 
+    stack_end=0x7fffffffea78) at ../csu/libc-start.c:344
+344     ../csu/libc-start.c: No such file or directory.
+(gdb) 
+[Inferior 1 (process 15953) exited normally]
+(gdb) r
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/randclient 127.0.0.1
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffea88) at randclient.c:24
+24          if (argc != 2) {
+(gdb) q
+A debugging session is active.
+
+        Inferior 1 [process 15966] will be killed.
+
+Quit anyway? (y or n) n
+Not confirmed.
+(gdb) r 127.0.0.1
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /h/u14/c7/00/sherma73/Desktop/lab10/randclient 127.0.0.1
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+Error in re-setting breakpoint 2: No symbol "buf" in current context.
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffea88) at randclient.c:24
+24          if (argc != 2) {
+(gdb) n
+29          int soc = connect_to_server(PORT, argv[1]);
+(gdb) 
+31          write_random_pieces(soc, MESSAGE, TIMES);
+(gdb) 
+33          close(soc);
+(gdb) 
+34          return 0;
+(gdb) 
+35      }
+(gdb) 
+__libc_start_main (main=0x555555554c5a <main>, argc=2, argv=0x7fffffffea88, 
+    init=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>, 
+    stack_end=0x7fffffffea78) at ../csu/libc-start.c:344
+344     ../csu/libc-start.c: No such file or directory.
+(gdb) 
+[Inferior 1 (process 15968) exited normally]
+(gdb) 
+The program is not being run.
+(gdb) q
+]0;sherma73@wolf:/h/u14/c7/00/sherma73/Desktop/lab10wolf:~/Desktop/lab10$ exit
+exit
+
+Script done on 2019-11-23 20:42:57-0500
