@@ -31,7 +31,7 @@ endmodule
                                                                      
 
 module T_ff_enable_behavior(input T, input Clk, input Clear_b, output reg Q);
-	always @(posedge Clk, negedge Clear_b) // don't get the inputs here. why do we use Clk? Clear_b?
+	always @(posedge Clk, negedge Clear_b)
       if (!Clear_b) // Clear_b is low (1'b0)
 		Q <= 1'b0; 
 	  else if (T) 	// if Toggle is on, toggle Q to off
