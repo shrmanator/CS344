@@ -1,8 +1,8 @@
 vlib work
 
-vlog -timescale 1ns/1ns slower_hex_counter_1_to_F.v
+vlog -timescale 1ns/1ns slow_hex_counter_1_to_F.v
 
-vsim slower_hex_counter_1_to_F
+vsim slow_hex_counter_1_to_F
 
 log {/*}
 add wave {/*}

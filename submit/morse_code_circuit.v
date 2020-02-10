@@ -1,10 +1,10 @@
-module morse_code_circuit(SW, KEY, LEDR, CLOCK_50);
-  	input [2:0] SW; //three_bit_binary_of_letter
-	input CLOCK_50;
-  	input [1:0] KEY; 	//KEY[1]: load_pattern_into_register, KEY[0]: reset_to_000
-  	output [0:0] LEDR; // led_output
+module morse_code_circuit(LEDR, SW, KEY, CLOCK_50);
+    output [0:0] LEDR; // led_output
+    input [2:0] SW; //three_bit_binary_of_letter
+    input [1:0] KEY; 	//KEY[1]: load_pattern_into_register, KEY[0]: reset_to_000
+    input CLOCK_50;
 	
-	morse_output m0(SW[2:0], KEY[1], CLOCK_50, KEY[0], LEDR[0], 1'b1);
+    morse_output m0(SW[2:0], KEY[1], CLOCK_50, KEY[0], LEDR[0], 1'b1);
 endmodule
 
 
