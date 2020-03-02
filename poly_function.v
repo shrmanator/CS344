@@ -120,7 +120,7 @@ module control(
                 S_CYCLE_0       = 4'd8,
                 S_CYCLE_1       = 4'd9,
                 S_CYCLE_2       = 4'd10,
-  				S_CYCLE_3       = 4'd11,
+  		S_CYCLE_3       = 4'd11,
                 S_CYCLE_4       = 4'd12;
     
     // Next state logic aka our state table
@@ -136,8 +136,11 @@ module control(
                 S_LOAD_X: next_state = go ? S_LOAD_X_WAIT : S_LOAD_X; // Loop in current state until value is input
                 S_LOAD_X_WAIT: next_state = go ? S_LOAD_X_WAIT : S_CYCLE_0; // Loop in current state until go signal goes low
                 S_CYCLE_0: next_state = S_CYCLE_1;
-                S_CYCLE_1: next_state = S_LOAD_A; // we will be done our two operations, start over after
-            default:     next_state = S_LOAD_A;
+                S_CYCLE_1: next_state = S_CYCLE_2; // we will be done our two operations, start over after
+                S_CYCLE_2: next_state = S_CYCLE_3;
+                S_CYCLE_3: next_state = S_CYCLE_4; // we will be done our two operations, start over after
+                S_CYCLE_4: next_state = S_LOAD_A;
+            	default:     next_state = S_LOAD_A;
         endcase
     end // state_table
    
@@ -170,7 +173,7 @@ module control(
                 ld_x = 1'b1;
                 end
             S_CYCLE_0: begin // Do B <- B * X
-                ld_alu_out = 1'b1; ld_a = 1'b0; ld_b = 1'b1; // store result back into B
+                ld_alu_out = 1'b1; ld_b = 1'b1; // store result back into B
                 alu_select_a = 2'b11; // Select register X
                 alu_select_b = 2'b01; // Also select register B
                 alu_op = 1'b1; // Do multiply operation
