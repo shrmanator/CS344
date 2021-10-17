@@ -109,7 +109,6 @@ char* getSmallestFileInCurrDir() {
     and automatically process it.
     */
 
-
 }
 
 
